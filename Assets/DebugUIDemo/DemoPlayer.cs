@@ -29,29 +29,23 @@ public class DemoPlayer : MonoBehaviour
     void OnEnable()
     {
         // `this` is the owner: the panel disappears automatically when this object is destroyed.        
-        DebugUI.Panel(this, "Player", p =>
-        {
-            p.Label("Build 1.2.3");
-            p.Label("HP", () => hp);
-            p.Slider("Speed", () => speed, v => speed = v, 0, 720);
-            p.Slider("Level", () => level, v => level = v, 1, 10);
-            p.Field("Gold", () => gold, v => gold = v);
-            p.Field("Score", () => score, v => score = Mathf.Max(0, v)); // rejects negatives
-            p.Field("Jump", () => jumpHeight, v => jumpHeight = v);
-            p.Field("Name", () => playerName, v => playerName = v);
-            p.Field("God mode", () => godMode, v => godMode = v);
-            p.Horizontal(h =>
-            {
-                h.Button("Heal", () => hp = maxHp, new Color(0.2f, 0.6f, 0.3f));
-                h.Button("Kill", () => hp = 0, new Color(0.75f, 0.2f, 0.2f));
-                h.Button("Destroy", () => Destroy(gameObject));
-            });
-            p.Foldout("Advanced", f =>
-            {
-                f.Slider("Gravity", () => Physics2D.gravity.y, v => Physics2D.gravity = new Vector2(0, v), -30, 0);
-                f.Label("Position", () => transform.position);
-            });
-        });
+        DebugUI.Panel(this, "Player", p => p
+            .Label("Build 1.2.3")
+            .Label("HP", () => hp)
+            .Slider("Speed", () => speed, v => speed = v, 0, 720)
+            .Slider("Level", () => level, v => level = v, 1, 10)
+            .Field("Gold", () => gold, v => gold = v)
+            .Field("Score", () => score, v => score = Mathf.Max(0, v)) // rejects negatives
+            .Field("Jump", () => jumpHeight, v => jumpHeight = v)
+            .Field("Name", () => playerName, v => playerName = v)
+            .Field("God mode", () => godMode, v => godMode = v)
+            .Horizontal(h => h
+                .Button("Heal", () => hp = maxHp, new Color(0.2f, 0.6f, 0.3f))
+                .Button("Kill", () => hp = 0, new Color(0.75f, 0.2f, 0.2f))
+                .Button("Destroy", () => Destroy(gameObject)))
+            .Foldout("Advanced", f => f
+                .Slider("Gravity", () => Physics2D.gravity.y, v => Physics2D.gravity = new Vector2(0, v), -30, 0)
+                .Label("Position", () => transform.position)));
     }
 
     void Start() => DemoTimePanel.Register();

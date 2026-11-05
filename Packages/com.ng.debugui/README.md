@@ -23,21 +23,15 @@ public class Player : MonoBehaviour
     void OnEnable()
     {
         // `this` owns the panel: it disappears when this object is destroyed.
-        DebugUI.Panel(this, "Player", p =>
-        {
-            p.Label("HP", () => hp);                                   // read-only, follows the game
-            p.Slider("Speed", () => speed, v => speed = v, 0, 20);
-            p.Field("Gold", () => gold, v => gold = v);                // int, float, string or bool
-            p.Horizontal(h =>
-            {
-                h.Button("Heal", () => hp = maxHp, Color.green);
-                h.Button("Kill", () => hp = 0, Color.red);
-            });
-            p.Foldout("Advanced", f =>
-            {
-                f.Slider("Gravity", () => Physics2D.gravity.y, v => Physics2D.gravity = new(0, v), -30, 0);
-            });
-        });
+        DebugUI.Panel(this, "Player", p => p
+            .Label("HP", () => hp)                                    // read-only, follows the game
+            .Slider("Speed", () => speed, v => speed = v, 0, 20)
+            .Field("Gold", () => gold, v => gold = v)                 // int, float, string or bool
+            .Horizontal(h => h
+                .Button("Heal", () => hp = maxHp, Color.green)
+                .Button("Kill", () => hp = 0, Color.red))
+            .Foldout("Advanced", f => f
+                .Slider("Gravity", () => Physics2D.gravity.y, v => Physics2D.gravity = new(0, v), -30, 0)));
     }
 }
 ```
@@ -62,6 +56,10 @@ DebugUI.Remove("Audio");
 | `Foldout(title, b => …, open)` | collapsible section | closed by default |
 
 Leave the setter out (or pass `null`) to make a control read-only.
+
+Every builder method returns the builder, so calls chain: `p.Label("Build 1.2.3").Label("HP", () => hp)`.
+`Vertical` / `Horizontal` / `Foldout` return the *outer* builder, so the chain continues after the
+layout at the same level. Writing one statement per line (`p.Label(...); p.Label(...);`) works too.
 
 ### How values stay in sync
 

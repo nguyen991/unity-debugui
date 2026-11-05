@@ -18,37 +18,40 @@ namespace Ng.DebugTools
 
         // ---------- Layout ----------
 
-        public void Vertical(Action<IDebugBuilder> build) => Nest(UssClasses.Vertical, build);
+        public IDebugBuilder Vertical(Action<IDebugBuilder> build) => Nest(UssClasses.Vertical, build);
 
-        public void Horizontal(Action<IDebugBuilder> build) => Nest(UssClasses.Horizontal, build);
+        public IDebugBuilder Horizontal(Action<IDebugBuilder> build) => Nest(UssClasses.Horizontal, build);
 
-        public void Foldout(string title, Action<IDebugBuilder> build, bool open = false)
+        public IDebugBuilder Foldout(string title, Action<IDebugBuilder> build, bool open = false)
         {
             var foldout = new Foldout { text = title, value = open };
             foldout.AddToClassList(UssClasses.Foldout);
             container.Add(foldout);
             var child = group.AddChild(() => foldout.value);
             build?.Invoke(new DebugBuilder(foldout.contentContainer, child));
+            return this;
         }
 
-        void Nest(string className, Action<IDebugBuilder> build)
+        IDebugBuilder Nest(string className, Action<IDebugBuilder> build)
         {
             var element = new VisualElement();
             element.AddToClassList(className);
             container.Add(element);
             build?.Invoke(new DebugBuilder(element, group));
+            return this;
         }
 
         // ---------- Controls ----------
 
-        public void Label(string text)
+        public IDebugBuilder Label(string text)
         {
             var label = new Label(text);
             label.AddToClassList(UssClasses.Text);
             container.Add(label);
+            return this;
         }
 
-        public void Label<T>(string label, Func<T> getter)
+        public IDebugBuilder Label<T>(string label, Func<T> getter)
         {
             var row = new VisualElement();
             row.AddToClassList(UssClasses.Row);
@@ -62,9 +65,10 @@ namespace Ng.DebugTools
 
             group.Add(new ValueBinding<T>(row, getter, null,
                 v => value.text = v == null ? "null" : v.ToString()));
+            return this;
         }
 
-        public void Button(string text, Action onClick, Color? color = null)
+        public IDebugBuilder Button(string text, Action onClick, Color? color = null)
         {
             var button = new Button(() =>
             {
@@ -81,6 +85,7 @@ namespace Ng.DebugTools
                 button.style.color = ReadableTextColor(color.Value);
             }
             container.Add(button);
+            return this;
         }
 
         /// <summary>Dark text on light backgrounds, white text on dark ones.</summary>
@@ -90,29 +95,29 @@ namespace Ng.DebugTools
             return luminance > 0.35f ? new Color(0.08f, 0.08f, 0.1f) : Color.white;
         }
 
-        public void Slider(string label, Func<float> get, Action<float> set, float min, float max)
+        public IDebugBuilder Slider(string label, Func<float> get, Action<float> set, float min, float max)
             => AddField(new Slider(label, min, max) { showInputField = true }, UssClasses.Slider, get, set, null);
 
-        public void Slider(string label, Func<int> get, Action<int> set, int min, int max)
+        public IDebugBuilder Slider(string label, Func<int> get, Action<int> set, int min, int max)
             => AddField(new SliderInt(label, min, max) { showInputField = true }, UssClasses.Slider, get, set, null);
 
-        public void Field(string label, Func<int> get, Action<int> set = null)
+        public IDebugBuilder Field(string label, Func<int> get, Action<int> set = null)
             => AddField(new IntegerField(label) { isDelayed = true }, UssClasses.Field, get, set, null);
 
-        public void Field(string label, Func<float> get, Action<float> set = null)
+        public IDebugBuilder Field(string label, Func<float> get, Action<float> set = null)
             => AddField(new FloatField(label) { isDelayed = true }, UssClasses.Field, get, set, null);
 
-        public void Field(string label, Func<string> get, Action<string> set = null)
+        public IDebugBuilder Field(string label, Func<string> get, Action<string> set = null)
             => AddField(new TextField(label) { isDelayed = true }, UssClasses.Field, get, set, v => v ?? string.Empty);
 
-        public void Field(string label, Func<bool> get, Action<bool> set = null)
+        public IDebugBuilder Field(string label, Func<bool> get, Action<bool> set = null)
             => AddField(new Toggle(label), UssClasses.Field, get, set, null);
 
         /// <summary>
         /// Shared wiring for every value control: getter → SetValueWithoutNotify (never echoes back
         /// into the setter), user change → setter, and "editing" while focused or dragging.
         /// </summary>
-        void AddField<T>(BaseField<T> field, string className, Func<T> get, Action<T> set, Func<T, T> toDisplay)
+        IDebugBuilder AddField<T>(BaseField<T> field, string className, Func<T> get, Action<T> set, Func<T, T> toDisplay)
         {
             field.AddToClassList(className);
             container.Add(field);
@@ -127,7 +132,7 @@ namespace Ng.DebugTools
                     input.isReadOnly = true;
                 else
                     field.SetEnabled(false);
-                return;
+                return this;
             }
 
             field.RegisterValueChangedCallback(e => binding.Write(e.newValue));
@@ -142,6 +147,7 @@ namespace Ng.DebugTools
             field.RegisterCallback<FocusOutEvent>(_ => { typing = false; Update(); }, TrickleDown.TrickleDown);
             field.RegisterCallback<PointerCaptureEvent>(_ => { dragging = true; Update(); }, TrickleDown.TrickleDown);
             field.RegisterCallback<PointerCaptureOutEvent>(_ => { dragging = false; Update(); }, TrickleDown.TrickleDown);
+            return this;
         }
 
         const string TextInputClass = "unity-base-text-field"; // TextInputBaseField<T>.ussClassName

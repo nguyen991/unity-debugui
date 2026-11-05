@@ -9,14 +9,12 @@ public static class DemoTimePanel
 {
     public static void Register()
     {
-        DebugUI.Panel(null, "Time", p =>
-        {
-            p.Slider("Time scale", () => Time.timeScale, v => Time.timeScale = v, 0, 2);
-            p.Label("FPS", () => Mathf.RoundToInt(1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f)));
-            p.Slider("Window width", () => DebugUI.Width, v => DebugUI.Width = v, 0.5f, 1f);
-            p.Slider("Window height", () => DebugUI.Height, v => DebugUI.Height = v, 0.5f, 1f);
-            p.Slider("UI scale", () => DebugUI.Scale, v => DebugUI.Scale = v, 0.5f, 3f);
-            p.Button("Remove me", () => DebugUI.Remove("Time"));
-        });
+        DebugUI.Panel(null, "Time", p => p
+            .Slider("Time scale", () => Time.timeScale, v => Time.timeScale = v, 0, 2)
+            .Label("FPS", () => Mathf.RoundToInt(1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f)))
+            .Slider("Window width", () => DebugUI.Width, v => DebugUI.Width = v, 0.5f, 1f)
+            .Slider("Window height", () => DebugUI.Height, v => DebugUI.Height = v, 0.5f, 1f)
+            .Slider("UI scale", () => DebugUI.Scale, v => DebugUI.Scale = v, 0.5f, 3f)
+            .Button("Remove me", () => DebugUI.Remove("Time")));
     }
 }
