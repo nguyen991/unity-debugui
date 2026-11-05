@@ -150,5 +150,47 @@ namespace Ng.DebugTools.Tests
             var track = w.Content.Q<Slider>().Q(className: "unity-base-slider__drag-container");
             Assert.That(track.layout.width, Is.GreaterThanOrEqualTo(150f));
         }
+            static string Diag(VisualElement e, int depth = 0)
+        {
+            var r = e.resolvedStyle;
+            var line = $"{new string('>', depth)}{e.GetType().Name}({string.Join(" ", System.Linq.Enumerable.Where(e.GetClasses(), c => !c.StartsWith("unity-base-field__label--")))}) L={e.layout} dir={r.flexDirection} wrap={r.flexWrap} basis={r.flexBasis} grow={r.flexGrow} h={e.style.height.value.value}{(e.style.height.keyword)} minH={r.minHeight} pad={r.paddingTop}/{r.paddingBottom} mar={r.marginTop}/{r.marginBottom} font={r.fontSize}; ";
+            foreach (var c in e.hierarchy.Children())
+                line += Diag(c, depth + 1);
+            return line;
+        }
+
+        // Phone width + big Scale (as reported): the slider's number box must stay inside the
+        // slider row, not overflow onto the next control.
+        [UnityTest]
+        public IEnumerator Narrow_SliderInputRow_DoesNotOverflowSlider()
+        {
+            DebugUI.Scale = 2f;
+            float a = 1, c = 1;
+            DebugUI.Panel(null, "A", p =>
+            {
+                p.Slider("Speed", () => a, v => a = v, 0, 10);
+                p.Slider("Level", () => c, v => c = v, 0, 10);
+            });
+            DebugUI.Open();
+            yield return null;
+            yield return null;
+            var w = TestUtil.Window;
+            w.Root.AddToClassList("ngdbg-narrow");
+            w.Window.style.right = StyleKeyword.Auto;
+            w.Window.style.width = 260;
+            yield return null;
+            yield return null;
+            Assert.That(w.Root.ClassListContains("ngdbg-narrow"), Is.True);
+
+            var sliders = w.Content.Query<Slider>().ToList();
+            foreach (var slider in sliders)
+            {
+                var input = slider.Q(className: "unity-base-slider__input");
+                Assert.That(input.layout.yMax, Is.LessThanOrEqualTo(slider.layout.height + 0.5f),
+                    $"{slider.label}: input row bottom {input.layout.yMax} > slider height {slider.layout.height} | " + Diag(slider));
+            }
+            Assert.That(sliders[1].layout.yMin, Is.GreaterThanOrEqualTo(sliders[0].layout.yMax - 0.5f),
+                "second slider starts inside the first");
+        }
     }
 }

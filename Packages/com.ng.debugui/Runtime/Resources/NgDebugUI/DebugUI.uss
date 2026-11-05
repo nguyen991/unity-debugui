@@ -206,6 +206,12 @@
     align-items: stretch;
 }
 
+/* The default theme sizes a horizontal slider's input row to the slider's full height. Once the
+   label sits above it that pushes the row (and its number box) out over the next control. */
+.ngdbg-narrow .ngdbg-slider > .unity-base-slider__input {
+    height: auto;
+}
+
 .ngdbg-narrow .ngdbg-slider > .unity-base-field__label {
     min-width: 0;
     margin-bottom: 2px;
