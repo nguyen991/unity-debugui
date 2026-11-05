@@ -114,6 +114,33 @@ namespace Ng.DebugTools
             }
         }
 
+        /// <summary>
+        /// Width of the debug window as a fraction of the screen (safe area) width, from 0.5 (half)
+        /// to 1 (full width). Values outside the range are clamped. The window stays on the right.
+        /// Null (default) keeps the automatic layout: a 380px column on wide screens, full width on
+        /// phone-sized screens. Can be set before the UI exists.
+        /// </summary>
+        public static float? PanelWidth
+        {
+            get => panelWidth;
+            set
+            {
+                panelWidth = value.HasValue
+                    ? (float.IsNaN(value.Value) ? 1f : Mathf.Clamp(value.Value, MinPanelWidth, 1f))
+                    : (float?)null;
+                var host = DebugUIHost.Instance;
+                if (host != null)
+                    host.Window.SetWidthFraction(panelWidth);
+            }
+        }
+
+        internal const float MinPanelWidth = 0.5f;
+        static float? panelWidth;
+
+        /// <summary>Supports Enter Play Mode Options with domain reload disabled.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetSettings() => panelWidth = null;
+
         public static void Open()
         {
             if (Enabled)

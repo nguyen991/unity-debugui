@@ -88,6 +88,24 @@ namespace Ng.DebugTools
             Root.style.bottom = insetsInPanelUnits.w;
         }
 
+        /// <summary>
+        /// Null: automatic width from the stylesheet. Otherwise a fraction of the root width,
+        /// anchored right (overrides the narrow layout's left: 0).
+        /// </summary>
+        internal void SetWidthFraction(float? fraction)
+        {
+            if (fraction.HasValue)
+            {
+                Window.style.width = Length.Percent(fraction.Value * 100f);
+                Window.style.left = StyleKeyword.Auto;
+            }
+            else
+            {
+                Window.style.width = StyleKeyword.Null;
+                Window.style.left = StyleKeyword.Null;
+            }
+        }
+
         public void Select(string name)
         {
             var entry = name != null ? registry.Find(name) : null;
