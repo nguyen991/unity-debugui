@@ -18,5 +18,15 @@ namespace Ng.DebugUI
         public const string Vertical = "ngdbg-vertical";
         public const string Horizontal = "ngdbg-horizontal";
         public const string Foldout = "ngdbg-foldout";
+
+        // Window
+        public const string Panel = "ngdbg-panel";
+        public const string Root = "ngdbg-root";
+        public const string Window = "ngdbg-window";
+        public const string TabBar = "ngdbg-tabbar";
+        public const string Tab = "ngdbg-tab";
+        public const string TabSelected = "ngdbg-tab--selected";
+        public const string Content = "ngdbg-content";
+        public const string Toggle = "ngdbg-toggle";
     }
 }
