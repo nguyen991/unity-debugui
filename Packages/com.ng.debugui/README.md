@@ -30,8 +30,8 @@ public class Player : MonoBehaviour
             p.Field("Gold", () => gold, v => gold = v);                // int, float, string or bool
             p.Horizontal(h =>
             {
-                h.Button("Heal", () => hp = maxHp);
-                h.Button("Kill", () => hp = 0);
+                h.Button("Heal", () => hp = maxHp, Color.green);
+                h.Button("Kill", () => hp = 0, Color.red);
             });
             p.Foldout("Advanced", f =>
             {
@@ -55,7 +55,7 @@ DebugUI.Remove("Audio");
 |---|---|---|
 | `Label(text)` | static text | |
 | `Label(label, getter)` | `label   value` | any type, `ToString()` only when the value changes |
-| `Button(text, onClick)` | button | exceptions are caught and logged |
+| `Button(text, onClick, color)` | button | `color` is optional (e.g. `Color.red`); text turns dark/light to stay readable. Exceptions are caught and logged |
 | `Slider(label, get, set, min, max)` | slider + number box | `float` or `int` |
 | `Field(label, get, set)` | input box | `int`, `float`, `string`; `bool` shows a toggle. Setter runs on Enter / leaving the box |
 | `Vertical(b => …)`, `Horizontal(b => …)` | layout | children of a horizontal row share its width |
@@ -139,6 +139,7 @@ Your rules win over the built-in ones with the same selector. If a built-in rule
 | `ngdbg-text` | `Label(text)` |
 | `ngdbg-row`, `ngdbg-row-label`, `ngdbg-value` | `Label(label, getter)` row, its name and its value |
 | `ngdbg-button` | `Button` |
+| `ngdbg-button--colored` | a `Button` given a color (hover/press feedback via `opacity`) |
 | `ngdbg-slider` | `Slider` |
 | `ngdbg-field` | `Field` (all types) |
 | `ngdbg-vertical`, `ngdbg-horizontal`, `ngdbg-foldout` | layouts |

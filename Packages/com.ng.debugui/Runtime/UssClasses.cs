@@ -11,6 +11,7 @@ namespace Ng.DebugTools
         public const string RowLabel = "ngdbg-row-label";
         public const string Value = "ngdbg-value";
         public const string Button = "ngdbg-button";
+        public const string ButtonColored = "ngdbg-button--colored";
         public const string Slider = "ngdbg-slider";
         public const string Field = "ngdbg-field";
 

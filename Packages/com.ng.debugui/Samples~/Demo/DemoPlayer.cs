@@ -42,8 +42,8 @@ public class DemoPlayer : MonoBehaviour
             p.Field("God mode", () => godMode, v => godMode = v);
             p.Horizontal(h =>
             {
-                h.Button("Heal", () => hp = maxHp);
-                h.Button("Kill", () => hp = 0);
+                h.Button("Heal", () => hp = maxHp, new Color(0.2f, 0.6f, 0.3f));
+                h.Button("Kill", () => hp = 0, new Color(0.75f, 0.2f, 0.2f));
                 h.Button("Destroy", () => Destroy(gameObject));
             });
             p.Foldout("Advanced", f =>

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Ng.DebugTools
 {
@@ -28,7 +29,11 @@ namespace Ng.DebugTools
         /// <summary>A read-only "label: value" row that follows the getter.</summary>
         void Label<T>(string label, Func<T> getter);
 
-        void Button(string text, Action onClick);
+        /// <summary>
+        /// A button. Pass <paramref name="color"/> to tint its background (text turns dark or light
+        /// automatically to stay readable); leave it out for the theme color.
+        /// </summary>
+        void Button(string text, Action onClick, Color? color = null);
 
         void Slider(string label, Func<float> get, Action<float> set, float min, float max);
         void Slider(string label, Func<int> get, Action<int> set, int min, int max);

@@ -64,7 +64,7 @@ namespace Ng.DebugTools
                 v => value.text = v == null ? "null" : v.ToString()));
         }
 
-        public void Button(string text, Action onClick)
+        public void Button(string text, Action onClick, Color? color = null)
         {
             var button = new Button(() =>
             {
@@ -72,7 +72,22 @@ namespace Ng.DebugTools
                 catch (Exception e) { Debug.LogException(e); }
             }) { text = text };
             button.AddToClassList(UssClasses.Button);
+            if (color.HasValue)
+            {
+                // Inline color beats the theme's :hover/:active backgrounds, so the
+                // "--colored" modifier gives hover/press feedback through opacity instead.
+                button.AddToClassList(UssClasses.ButtonColored);
+                button.style.backgroundColor = color.Value;
+                button.style.color = ReadableTextColor(color.Value);
+            }
             container.Add(button);
+        }
+
+        /// <summary>Dark text on light backgrounds, white text on dark ones.</summary>
+        static Color ReadableTextColor(Color background)
+        {
+            float luminance = 0.2126f * background.linear.r + 0.7152f * background.linear.g + 0.0722f * background.linear.b;
+            return luminance > 0.35f ? new Color(0.08f, 0.08f, 0.1f) : Color.white;
         }
 
         public void Slider(string label, Func<float> get, Action<float> set, float min, float max)

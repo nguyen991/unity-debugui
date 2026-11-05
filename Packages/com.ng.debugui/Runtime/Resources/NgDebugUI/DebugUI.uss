@@ -120,6 +120,15 @@
     background-color: rgb(70, 110, 200);
 }
 
+/* Buttons with a custom color (Button(text, onClick, color)): feedback via opacity. */
+.ngdbg-button--colored:hover {
+    opacity: 0.85;
+}
+
+.ngdbg-button--colored:active {
+    opacity: 0.6;
+}
+
 .ngdbg-field,
 .ngdbg-slider {
     min-height: 32px;
