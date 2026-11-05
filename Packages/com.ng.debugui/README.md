@@ -106,7 +106,13 @@ DebugUI.LogPanel("Console", capacity: 2000); // custom tab name / size
   panels in other tabs are not polled.
 - While the debug UI is **closed, no getter runs**.
 - A control the user is editing (dragging a slider, typing in a field) is not overwritten.
-- If a getter or setter throws, that control turns red and the exception is logged once.
+- After the user edits a value, the control shows the game's value again on the next refresh, so a setter
+  that rejects or clamps the input (e.g. `v => gold = Mathf.Max(0, v)`) is reflected in the UI.
+- A slider whose getter returns a value outside `[min, max]` shows it clamped, but does **not** call the
+  setter — the game value is left untouched.
+- If a getter throws, that control turns red (`ngdbg-error`) until the getter works again; the exception
+  is logged once per control. If a setter throws, the exception is logged once and the control goes back
+  to showing the game's value.
 
 ### Opening the UI
 
@@ -129,6 +135,27 @@ DebugUI.Height = 0.6f;  // top 60%
 if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
     Shoot();
 ```
+
+## Behavior details
+
+- **Same panel name again** — registering a name that already exists replaces that panel in place (same
+  tab, same position), so calling `DebugUI.Panel` again from `OnEnable` after a re-enable or scene reload
+  never duplicates it.
+- **Owner destroyed** — the panel is removed at the latest on the next frame; if it was the open tab, the
+  first remaining tab is selected.
+- **`build` throws** — the controls built before the exception stay, followed by a red
+  "Build failed: …" line; the exception is logged and other panels are unaffected. Inside `Each`, an item
+  whose build throws shows "Item failed: …" and the other items are still built.
+- **Null values** — `Label(label, getter)` shows `null`; a `string` `Field` shows an empty box.
+- **Safe area** — the window always stays inside `Screen.safeArea` (notches, rounded corners).
+- **Phone-width screens** (< 600 panel px, class `ngdbg-narrow`) — slider labels move above the track so
+  the track stays wide enough to drag. `Width` / `Height` still apply.
+- **`Each` inside `Horizontal`** — the items are laid out side by side and share the row's width.
+- **Several log panels** — every `LogPanel` call shares one log buffer; the `capacity` of the latest call
+  applies.
+- **Settings reset** — `Width`, `Height`, `Scale` and added style sheets go back to their defaults when the
+  app starts or Play Mode is entered (also with *Enter Play Mode Options* / no domain reload), so set them
+  from startup code.
 
 ## Styling
 
@@ -192,12 +219,36 @@ Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slide
 |---|---|
 | Editor | on |
 | Development Build | on |
-| Release build | **removed**: `DebugUI.Panel(...)` / `DebugUI.Remove(...)` calls are stripped by the compiler, lambdas and strings included |
+| Release build | **removed**: `DebugUI.Panel(...)`, `DebugUI.LogPanel(...)` and `DebugUI.Remove(...)` calls are stripped by the compiler, lambdas and strings included |
 | Release build with scripting define `DEBUG_UI_ENABLED` | on (e.g. a release build for testers) |
 | Any build with scripting define `DEBUG_UI_DISABLED` | off everywhere (calls compile but do nothing) |
 
-`DebugUI.IsOpen` / `Open()` / `IsPointerOverUI` always compile and simply do nothing / return `false` when
-the debug UI is off.
+The other members — `Open()`, `Close()`, `Toggle()`, `IsOpen`, `IsPointerOverUI`, `Width`, `Height`,
+`Scale`, `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
+create any UI: `Open()` / `Close()` / `Toggle()` do nothing, `IsOpen` and `IsPointerOverUI` return `false`,
+and the settings are only stored.
+
+## Known limitations
+
+- **Unity 6.6+ Development Builds** — Unity 6.6 deprecates the `DEVELOPMENT_BUILD` define (warning UAC0009,
+  silenced inside the package). It is still the only define that marks a development player on every
+  supported version, so the package keeps using it. If a Development Build on 6.6+ shows no debug UI, add
+  the scripting define `DEBUG_UI_ENABLED` to that build.
+- **Backquote while typing** — the `` ` `` hotkey also toggles the UI when typed into a text field.
+- **No gamepad / keyboard navigation** — the UI is made for mouse and touch.
+- **Swiping over a number field's label** (`Gold`, `Jump`…) may change the value (UI Toolkit's
+  drag-to-change) instead of scrolling the panel — swipe over the input box or empty space to scroll.
+- **Demo scene** — uses URP's 2D sprite material; in a Built-in RP project the square shows as missing
+  material (the debug UI itself works with any render pipeline).
+
+## Running the package tests
+
+Add the package to `testables` in `Packages/manifest.json`, then run the **PlayMode** tests
+(*Window → General → Test Runner*):
+
+```json
+"testables": ["com.ng.debugui"]
+```
 
 ## Sample
 
