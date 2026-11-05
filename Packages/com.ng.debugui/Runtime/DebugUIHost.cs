@@ -68,6 +68,7 @@ namespace Ng.DebugTools
             Registry = new PanelRegistry();
             Window = new DebugUIWindow(Document.rootVisualElement, Registry);
             Window.SetSize(DebugUI.Width, DebugUI.Height);
+            Window.SetButtonPosition(DebugUI.ButtonPosition);
             foreach (var sheet in DebugUI.StyleSheets)
                 Window.Root.styleSheets.Add(sheet);
             Window.ToggleRequested += Toggle;

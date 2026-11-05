@@ -79,6 +79,39 @@
     -unity-font-style: bold;
 }
 
+/* DebugUI.ButtonPosition corners (bottom-right is the default above). */
+.ngdbg-toggle--top-left {
+    top: 4px;
+    left: 8px;
+    right: auto;
+    bottom: auto;
+}
+
+.ngdbg-toggle--top-right {
+    top: 4px;
+    right: 8px;
+    bottom: auto;
+}
+
+.ngdbg-toggle--bottom-left {
+    left: 8px;
+    right: auto;
+}
+
+/* A button in a top corner sits beside the tabs: keep that side free, and make the tab row at least
+   as tall as the button so the panel content starts below it. */
+.ngdbg-root--toggle-top-left .ngdbg-tabbar {
+    padding-left: 56px;
+    min-height: 48px;
+    max-height: none;
+}
+
+.ngdbg-root--toggle-top-right .ngdbg-tabbar {
+    padding-right: 56px;
+    min-height: 48px;
+    max-height: none;
+}
+
 /* ---------- Controls ---------- */
 
 .ngdbg-root Label {

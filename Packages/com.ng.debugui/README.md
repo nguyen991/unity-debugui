@@ -118,6 +118,16 @@ DebugUI.LogPanel("Console", capacity: 2000); // custom tab name / size
 
 - Tap / click the round **DBG** button (bottom-right), or press **`** (backquote) when the
   Input System package is installed.
+- Move or hide the DBG button:
+
+```csharp
+DebugUI.ButtonPosition = DebugButtonPosition.TopLeft;  // TopLeft, TopRight, BottomLeft, BottomRight (default)
+DebugUI.ButtonPosition = DebugButtonPosition.None;     // hidden: open with the shortcut or DebugUI.Open()
+```
+
+  With `None` on a touch device there is no keyboard shortcut, so open the UI from your own code
+  (e.g. a secret gesture calling `DebugUI.Toggle()`).
+
 - Change or turn off the shortcut (Input System only):
 
 ```csharp
@@ -165,7 +175,7 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
 - **`Each` inside `Horizontal`** — the items are laid out side by side and share the row's width.
 - **Several log panels** — every `LogPanel` call shares one log buffer; the `capacity` of the latest call
   applies.
-- **Settings reset** — `Width`, `Height`, `Scale`, `SortingOrder`, `ToggleKey` and added style sheets go back to their defaults when the
+- **Settings reset** — `Width`, `Height`, `Scale`, `SortingOrder`, `ButtonPosition`, `ToggleKey` and added style sheets go back to their defaults when the
   app starts or Play Mode is entered (also with *Enter Play Mode Options* / no domain reload), so set them
   from startup code.
 
@@ -210,7 +220,7 @@ Your rules win over the built-in ones with the same selector. If a built-in rule
 | `ngdbg-tabbar`, `ngdbg-tab`, `ngdbg-tab--selected` | tab bar and tabs |
 | `ngdbg-content` | scrolling area holding the current panel |
 | `ngdbg-panel` | root of each panel |
-| `ngdbg-toggle` | the round DBG button |
+| `ngdbg-toggle` | the round DBG button (`ngdbg-toggle--top-left`, `--top-right`, `--bottom-left`, `--bottom-right` for its corner) |
 | `ngdbg-text` | `Label(text)` |
 | `ngdbg-row`, `ngdbg-row-label`, `ngdbg-value` | `Label(label, getter)` row, its name and its value |
 | `ngdbg-button` | `Button` |
@@ -236,7 +246,7 @@ Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slide
 | Any build with scripting define `DEBUG_UI_DISABLED` | off everywhere (calls compile but do nothing) |
 
 The other members — `Open()`, `Close()`, `Toggle()`, `IsOpen`, `IsPointerOverUI`, `Width`, `Height`,
-`Scale`, `SortingOrder`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
+`Scale`, `SortingOrder`, `ButtonPosition`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
 create any UI: `Open()` / `Close()` / `Toggle()` do nothing, `IsOpen` and `IsPointerOverUI` return `false`,
 and the settings are only stored.
 

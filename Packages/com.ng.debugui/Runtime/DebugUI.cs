@@ -233,6 +233,25 @@ namespace Ng.DebugTools
 
         static float sortingOrder = DefaultSortingOrder;
 
+        /// <summary>
+        /// Corner of the round DBG button (default bottom-right). <see cref="DebugButtonPosition.None"/>
+        /// hides it — then the UI opens only via the keyboard shortcut or <see cref="Open"/>, so on
+        /// touch devices open it from your own code.
+        /// </summary>
+        public static DebugButtonPosition ButtonPosition
+        {
+            get => buttonPosition;
+            set
+            {
+                buttonPosition = value;
+                var host = DebugUIHost.Instance;
+                if (host != null)
+                    host.Window.SetButtonPosition(value);
+            }
+        }
+
+        static DebugButtonPosition buttonPosition = DebugButtonPosition.BottomRight;
+
         internal const float MinScale = 0.5f, MaxScale = 3f;
         static float scale = 1f;
 
@@ -264,7 +283,7 @@ namespace Ng.DebugTools
         internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
 
         /// <summary>
-        /// Back to defaults: full size, scale 1, default sorting order, no extra stylesheets, backquote shortcut. Also runs on entering play
+        /// Back to defaults: full size, scale 1, default sorting order, button bottom-right, no extra stylesheets, backquote shortcut. Also runs on entering play
         /// mode so Enter Play Mode Options with domain reload disabled starts clean.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -279,6 +298,7 @@ namespace Ng.DebugTools
             ApplySize();
             Scale = 1f;
             SortingOrder = DefaultSortingOrder;
+            ButtonPosition = DebugButtonPosition.BottomRight;
 #if NG_DEBUGUI_INPUT_SYSTEM
             toggleKey = Key.Backquote;
 #endif

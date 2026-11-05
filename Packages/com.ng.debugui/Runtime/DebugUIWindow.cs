@@ -95,6 +95,22 @@ namespace Ng.DebugTools
             Window.style.height = Length.Percent(heightFraction * 100f);
         }
 
+        static readonly string[] ToggleCornerClasses =
+        {
+            null, "ngdbg-toggle--top-left", "ngdbg-toggle--top-right", "ngdbg-toggle--bottom-left", "ngdbg-toggle--bottom-right",
+        };
+
+        /// <summary>Moves the DBG button to a corner, or hides it for <see cref="DebugButtonPosition.None"/>.</summary>
+        internal void SetButtonPosition(DebugButtonPosition position)
+        {
+            for (int i = 1; i < ToggleCornerClasses.Length; i++)
+                ToggleButton.EnableInClassList(ToggleCornerClasses[i], (int)position == i);
+            ToggleButton.style.display = position == DebugButtonPosition.None ? DisplayStyle.None : StyleKeyword.Null;
+            // A button in a top corner sits over the tab bar: keep that side of the tab bar free.
+            Root.EnableInClassList("ngdbg-root--toggle-top-left", position == DebugButtonPosition.TopLeft);
+            Root.EnableInClassList("ngdbg-root--toggle-top-right", position == DebugButtonPosition.TopRight);
+        }
+
         public void Select(string name)
         {
             var entry = name != null ? registry.Find(name) : null;
