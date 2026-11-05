@@ -32,6 +32,7 @@ public class DemoPlayer : MonoBehaviour
         DebugUI.Panel(this, "Player", p => p
             .Label("Build 1.2.3")
             .Label("HP", () => hp)
+            .Line()
             .Slider("Speed", () => speed, v => speed = v, 0, 720)
             .Slider("Level", () => level, v => level = v, 1, 10)
             .Field("Gold", () => gold, v => gold = v)
@@ -39,9 +40,11 @@ public class DemoPlayer : MonoBehaviour
             .Field("Jump", () => jumpHeight, v => jumpHeight = v)
             .Field("Name", () => playerName, v => playerName = v)
             .Field("God mode", () => godMode, v => godMode = v)
+            .Space(12)
             .Horizontal(h => h
                 .Button("Heal", () => hp = maxHp, new Color(0.2f, 0.6f, 0.3f))
                 .Button("Kill", () => hp = 0, new Color(0.75f, 0.2f, 0.2f))
+                .Line()
                 .Button("Destroy", () => Destroy(gameObject)))
             .Foldout("Advanced", f => f
                 .Slider("Gravity", () => Physics2D.gravity.y, v => Physics2D.gravity = new Vector2(0, v), -30, 0)

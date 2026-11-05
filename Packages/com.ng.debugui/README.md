@@ -53,6 +53,8 @@ DebugUI.Remove("Audio");
 | `Slider(label, get, set, min, max)` | slider + number box | `float` or `int` |
 | `Field(label, get, set)` | input box | `int`, `float`, `string`; `bool` shows a toggle. Setter runs on Enter / leaving the box |
 | `Vertical(b => …)`, `Horizontal(b => …)` | layout | children of a horizontal row share its width |
+| `Line()` | thin separator | horizontal in a column, vertical inside `Horizontal` |
+| `Space(size = 8)` | empty space | height in a column, width inside `Horizontal` |
 | `Foldout(title, b => …, open)` | collapsible section | closed by default |
 
 Leave the setter out (or pass `null`) to make a control read-only.
@@ -141,6 +143,7 @@ Your rules win over the built-in ones with the same selector. If a built-in rule
 | `ngdbg-slider` | `Slider` |
 | `ngdbg-field` | `Field` (all types) |
 | `ngdbg-vertical`, `ngdbg-horizontal`, `ngdbg-foldout` | layouts |
+| `ngdbg-line`, `ngdbg-space` | `Line()`, `Space()` (e.g. `.ngdbg-line { background-color: …; }`) |
 | `ngdbg-narrow` | added to `ngdbg-root` on phone-width screens (< 600 panel px) |
 | `ngdbg-error` | a control whose getter/setter threw |
 

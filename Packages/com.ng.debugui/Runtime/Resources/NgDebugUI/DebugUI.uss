@@ -193,6 +193,22 @@
     flex-basis: 0;
 }
 
+/* Line(): horizontal rule in a column, vertical rule in a row. */
+.ngdbg-line {
+    height: 1px;
+    flex-shrink: 0;
+    margin: 6px 0;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.ngdbg-horizontal > .ngdbg-line {
+    width: 1px;
+    height: auto;
+    flex-grow: 0;
+    flex-basis: auto;
+    margin: 4px 6px;
+}
+
 .ngdbg-error,
 .ngdbg-root .ngdbg-error Label,
 .ngdbg-root Label.ngdbg-error {

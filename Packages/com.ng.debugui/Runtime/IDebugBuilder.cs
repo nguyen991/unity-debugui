@@ -24,6 +24,12 @@ namespace Ng.DebugTools
         /// <summary>A collapsible section. Getters inside are not called while it is closed.</summary>
         IDebugBuilder Foldout(string title, Action<IDebugBuilder> build, bool open = false);
 
+        /// <summary>A thin separator line: horizontal in a column, vertical inside <see cref="Horizontal"/>.</summary>
+        IDebugBuilder Line();
+
+        /// <summary>Empty space along the layout direction: height in a column, width inside <see cref="Horizontal"/>.</summary>
+        IDebugBuilder Space(float size = 8f);
+
         // Controls
 
         /// <summary>Static text.</summary>

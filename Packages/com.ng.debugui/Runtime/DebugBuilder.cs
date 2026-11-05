@@ -32,6 +32,28 @@ namespace Ng.DebugTools
             return this;
         }
 
+        public IDebugBuilder Line()
+        {
+            var line = new VisualElement { pickingMode = PickingMode.Ignore };
+            line.AddToClassList(UssClasses.Line);
+            container.Add(line);
+            return this;
+        }
+
+        public IDebugBuilder Space(float size = 8f)
+        {
+            // flex-basis is the size along the parent's direction, so one element works as vertical
+            // space in a column and horizontal space in a row. Inline values beat the
+            // ".ngdbg-horizontal > *" rule that makes row children share the width.
+            var space = new VisualElement { pickingMode = PickingMode.Ignore };
+            space.AddToClassList(UssClasses.Space);
+            space.style.flexBasis = Mathf.Max(0f, size);
+            space.style.flexGrow = 0f;
+            space.style.flexShrink = 0f;
+            container.Add(space);
+            return this;
+        }
+
         IDebugBuilder Nest(string className, Action<IDebugBuilder> build)
         {
             var element = new VisualElement();

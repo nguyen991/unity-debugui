@@ -19,6 +19,8 @@ namespace Ng.DebugTools
         public const string Vertical = "ngdbg-vertical";
         public const string Horizontal = "ngdbg-horizontal";
         public const string Foldout = "ngdbg-foldout";
+        public const string Line = "ngdbg-line";
+        public const string Space = "ngdbg-space";
 
         // Window
         public const string Panel = "ngdbg-panel";
