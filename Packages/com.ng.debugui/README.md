@@ -118,6 +118,13 @@ DebugUI.LogPanel("Console", capacity: 2000); // custom tab name / size
 
 - Tap / click the round **DBG** button (bottom-right), or press **`** (backquote) when the
   Input System package is installed.
+- Change or turn off the shortcut (Input System only):
+
+```csharp
+DebugUI.ToggleKey = Key.F1;    // using UnityEngine.InputSystem;
+DebugUI.ToggleKey = Key.None;  // no shortcut, DBG button only
+```
+
 - From code: `DebugUI.Open()`, `DebugUI.Close()`, `DebugUI.Toggle()`, `DebugUI.IsOpen`.
 - `DebugUI.Width` / `DebugUI.Height` size the window as a fraction of the screen, from `0.5f` (half)
   to `1f` (full, the default). The window is anchored to the top-right; the DBG button floats over its
@@ -153,7 +160,7 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
 - **`Each` inside `Horizontal`** — the items are laid out side by side and share the row's width.
 - **Several log panels** — every `LogPanel` call shares one log buffer; the `capacity` of the latest call
   applies.
-- **Settings reset** — `Width`, `Height`, `Scale` and added style sheets go back to their defaults when the
+- **Settings reset** — `Width`, `Height`, `Scale`, `ToggleKey` and added style sheets go back to their defaults when the
   app starts or Play Mode is entered (also with *Enter Play Mode Options* / no domain reload), so set them
   from startup code.
 
@@ -224,7 +231,7 @@ Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slide
 | Any build with scripting define `DEBUG_UI_DISABLED` | off everywhere (calls compile but do nothing) |
 
 The other members — `Open()`, `Close()`, `Toggle()`, `IsOpen`, `IsPointerOverUI`, `Width`, `Height`,
-`Scale`, `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
+`Scale`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
 create any UI: `Open()` / `Close()` / `Toggle()` do nothing, `IsOpen` and `IsPointerOverUI` return `false`,
 and the settings are only stored.
 
@@ -234,7 +241,8 @@ and the settings are only stored.
   silenced inside the package). It is still the only define that marks a development player on every
   supported version, so the package keeps using it. If a Development Build on 6.6+ shows no debug UI, add
   the scripting define `DEBUG_UI_ENABLED` to that build.
-- **Backquote while typing** — the `` ` `` hotkey also toggles the UI when typed into a text field.
+- **Shortcut while typing** — the shortcut key also toggles the UI when typed into a text field; pick a
+  key you don't type (e.g. `DebugUI.ToggleKey = Key.F1`).
 - **No gamepad / keyboard navigation** — the UI is made for mouse and touch.
 - **Swiping over a number field's label** (`Gold`, `Jump`…) may change the value (UI Toolkit's
   drag-to-change) instead of scrolling the panel — swipe over the input box or empty space to scroll.

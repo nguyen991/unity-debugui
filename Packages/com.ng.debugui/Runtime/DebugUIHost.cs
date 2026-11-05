@@ -140,6 +140,15 @@ namespace Ng.DebugTools
             return IsOverUI(RuntimePanelUtils.ScreenToPanel(panel, flipped));
         }
 
+#if NG_DEBUGUI_INPUT_SYSTEM
+        /// <summary>True on the frame <see cref="DebugUI.ToggleKey"/> goes down on <paramref name="keyboard"/>.</summary>
+        internal static bool ToggleKeyPressed(Keyboard keyboard)
+        {
+            var key = DebugUI.ToggleKey;
+            return keyboard != null && key != Key.None && keyboard[key].wasPressedThisFrame;
+        }
+#endif
+
         void UpdateSafeArea()
         {
             var safe = Screen.safeArea;
@@ -163,8 +172,7 @@ namespace Ng.DebugTools
         void Update()
         {
 #if NG_DEBUGUI_INPUT_SYSTEM
-            var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.backquoteKey.wasPressedThisFrame)
+            if (ToggleKeyPressed(Keyboard.current))
                 Toggle();
 #endif
             Tick();

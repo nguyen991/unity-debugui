@@ -188,6 +188,26 @@ namespace Ng.DebugTools
             }
         }
 
+#if NG_DEBUGUI_INPUT_SYSTEM
+        /// <summary>
+        /// Keyboard key that opens/closes the debug UI. Default <c>Key.Backquote</c>;
+        /// <c>Key.None</c> turns the shortcut off (the DBG button still works).
+        /// Only available with the Input System package.
+        /// </summary>
+        public static Key ToggleKey
+        {
+            get => toggleKey;
+            set
+            {
+                if (value != Key.None && ((int)value < 1 || (int)value > Keyboard.KeyCount))
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "Not a keyboard key.");
+                toggleKey = value;
+            }
+        }
+
+        static Key toggleKey = Key.Backquote;
+#endif
+
         internal const float MinScale = 0.5f, MaxScale = 3f;
         static float scale = 1f;
 
@@ -219,7 +239,7 @@ namespace Ng.DebugTools
         internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
 
         /// <summary>
-        /// Back to defaults: full size, scale 1, no extra stylesheets. Also runs on entering play
+        /// Back to defaults: full size, scale 1, no extra stylesheets, backquote shortcut. Also runs on entering play
         /// mode so Enter Play Mode Options with domain reload disabled starts clean.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -233,6 +253,9 @@ namespace Ng.DebugTools
             width = height = 1f;
             ApplySize();
             Scale = 1f;
+#if NG_DEBUGUI_INPUT_SYSTEM
+            toggleKey = Key.Backquote;
+#endif
         }
 
         public static void Open()
