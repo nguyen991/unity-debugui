@@ -123,7 +123,10 @@ DebugUI.LogPanel("Console", capacity: 2000); // custom tab name / size
 ```csharp
 DebugUI.ButtonPosition = DebugButtonPosition.TopLeft;  // TopLeft, TopRight, BottomLeft, BottomRight (default)
 DebugUI.ButtonPosition = DebugButtonPosition.None;     // hidden: open with the shortcut or DebugUI.Open()
+DebugUI.ButtonSize = 64f;                              // diameter in panel px (24 – 200, default 48)
 ```
+
+  Tabs and panel content keep clear of the button at any size and corner.
 
   With `None` on a touch device there is no keyboard shortcut, so open the UI from your own code
   (e.g. a secret gesture calling `DebugUI.Toggle()`).
@@ -175,7 +178,7 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
 - **`Each` inside `Horizontal`** — the items are laid out side by side and share the row's width.
 - **Several log panels** — every `LogPanel` call shares one log buffer; the `capacity` of the latest call
   applies.
-- **Settings reset** — `Width`, `Height`, `Scale`, `SortingOrder`, `ButtonPosition`, `ToggleKey` and added style sheets go back to their defaults when the
+- **Settings reset** — `Width`, `Height`, `Scale`, `SortingOrder`, `ButtonPosition`, `ButtonSize`, `ToggleKey` and added style sheets go back to their defaults when the
   app starts or Play Mode is entered (also with *Enter Play Mode Options* / no domain reload), so set them
   from startup code.
 
@@ -246,7 +249,7 @@ Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slide
 | Any build with scripting define `DEBUG_UI_DISABLED` | off everywhere (calls compile but do nothing) |
 
 The other members — `Open()`, `Close()`, `Toggle()`, `IsOpen`, `IsPointerOverUI`, `Width`, `Height`,
-`Scale`, `SortingOrder`, `ButtonPosition`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
+`Scale`, `SortingOrder`, `ButtonPosition`, `ButtonSize`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
 create any UI: `Open()` / `Close()` / `Toggle()` do nothing, `IsOpen` and `IsPointerOverUI` return `false`,
 and the settings are only stored.
 

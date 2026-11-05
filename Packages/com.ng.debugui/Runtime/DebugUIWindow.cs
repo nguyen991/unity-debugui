@@ -100,15 +100,53 @@ namespace Ng.DebugTools
             null, "ngdbg-toggle--top-left", "ngdbg-toggle--top-right", "ngdbg-toggle--bottom-left", "ngdbg-toggle--bottom-right",
         };
 
+        DebugButtonPosition buttonPosition = DebugButtonPosition.BottomRight;
+        float buttonSize = 48f;
+
         /// <summary>Moves the DBG button to a corner, or hides it for <see cref="DebugButtonPosition.None"/>.</summary>
         internal void SetButtonPosition(DebugButtonPosition position)
         {
+            buttonPosition = position;
+            ApplyButtonLayout();
+        }
+
+        /// <summary>Diameter of the round DBG button, in panel px.</summary>
+        internal void SetButtonSize(float size)
+        {
+            buttonSize = size;
+            ApplyButtonLayout();
+        }
+
+        /// <summary>
+        /// Places and sizes the DBG button, and keeps the space it covers free: beside the tabs (and at
+        /// least its height) in a top corner, below the panel content in a bottom corner.
+        /// </summary>
+        void ApplyButtonLayout()
+        {
+            var position = buttonPosition;
             for (int i = 1; i < ToggleCornerClasses.Length; i++)
                 ToggleButton.EnableInClassList(ToggleCornerClasses[i], (int)position == i);
             ToggleButton.style.display = position == DebugButtonPosition.None ? DisplayStyle.None : StyleKeyword.Null;
-            // A button in a top corner sits over the tab bar: keep that side of the tab bar free.
             Root.EnableInClassList("ngdbg-root--toggle-top-left", position == DebugButtonPosition.TopLeft);
             Root.EnableInClassList("ngdbg-root--toggle-top-right", position == DebugButtonPosition.TopRight);
+
+            float size = buttonSize, radius = size / 2f;
+            ToggleButton.style.width = size;
+            ToggleButton.style.height = size;
+            ToggleButton.style.borderTopLeftRadius = radius;
+            ToggleButton.style.borderTopRightRadius = radius;
+            ToggleButton.style.borderBottomLeftRadius = radius;
+            ToggleButton.style.borderBottomRightRadius = radius;
+            ToggleButton.style.fontSize = Mathf.Max(8f, size * 0.25f);
+
+            const float gap = 8f;
+            bool top = position == DebugButtonPosition.TopLeft || position == DebugButtonPosition.TopRight;
+            bool bottom = position == DebugButtonPosition.BottomLeft || position == DebugButtonPosition.BottomRight;
+            TabBar.style.paddingLeft = position == DebugButtonPosition.TopLeft ? size + gap : StyleKeyword.Null;
+            TabBar.style.paddingRight = position == DebugButtonPosition.TopRight ? size + gap : StyleKeyword.Null;
+            TabBar.style.minHeight = top ? size : StyleKeyword.Null;
+            TabBar.style.maxHeight = top ? StyleKeyword.None : StyleKeyword.Null;
+            Content.contentContainer.style.paddingBottom = bottom ? size + gap : 0f;
         }
 
         public void Select(string name)

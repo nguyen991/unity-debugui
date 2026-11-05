@@ -53,10 +53,6 @@
     flex-grow: 1;
 }
 
-/* Room at the end so the last control can scroll clear of the floating DBG button. */
-.ngdbg-content > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
-    padding-bottom: 56px;
-}
 
 .ngdbg-panel {
     padding: 0 4px 8px 4px;
@@ -98,19 +94,8 @@
     right: auto;
 }
 
-/* A button in a top corner sits beside the tabs: keep that side free, and make the tab row at least
-   as tall as the button so the panel content starts below it. */
-.ngdbg-root--toggle-top-left .ngdbg-tabbar {
-    padding-left: 56px;
-    min-height: 48px;
-    max-height: none;
-}
-
-.ngdbg-root--toggle-top-right .ngdbg-tabbar {
-    padding-right: 56px;
-    min-height: 48px;
-    max-height: none;
-}
+/* Button size (DebugUI.ButtonSize) and the space kept free around it (beside the tabs in a top corner,
+   below the content in a bottom corner) are set from code. */
 
 /* ---------- Controls ---------- */
 

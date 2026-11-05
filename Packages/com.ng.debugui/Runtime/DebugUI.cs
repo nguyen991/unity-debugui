@@ -252,6 +252,25 @@ namespace Ng.DebugTools
 
         static DebugButtonPosition buttonPosition = DebugButtonPosition.BottomRight;
 
+        /// <summary>
+        /// Diameter of the round DBG button in panel px (default 48, clamped to 24 – 200; also scaled by
+        /// <see cref="Scale"/>). Tabs and content keep clear of it at any size.
+        /// </summary>
+        public static float ButtonSize
+        {
+            get => buttonSize;
+            set
+            {
+                buttonSize = float.IsNaN(value) ? DefaultButtonSize : Mathf.Clamp(value, MinButtonSize, MaxButtonSize);
+                var host = DebugUIHost.Instance;
+                if (host != null)
+                    host.Window.SetButtonSize(buttonSize);
+            }
+        }
+
+        internal const float DefaultButtonSize = 48f, MinButtonSize = 24f, MaxButtonSize = 200f;
+        static float buttonSize = DefaultButtonSize;
+
         internal const float MinScale = 0.5f, MaxScale = 3f;
         static float scale = 1f;
 
@@ -283,7 +302,7 @@ namespace Ng.DebugTools
         internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
 
         /// <summary>
-        /// Back to defaults: full size, scale 1, default sorting order, button bottom-right, no extra stylesheets, backquote shortcut. Also runs on entering play
+        /// Back to defaults: full size, scale 1, default sorting order, button bottom-right and 48px, no extra stylesheets, backquote shortcut. Also runs on entering play
         /// mode so Enter Play Mode Options with domain reload disabled starts clean.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -299,6 +318,7 @@ namespace Ng.DebugTools
             Scale = 1f;
             SortingOrder = DefaultSortingOrder;
             ButtonPosition = DebugButtonPosition.BottomRight;
+            ButtonSize = DefaultButtonSize;
 #if NG_DEBUGUI_INPUT_SYSTEM
             toggleKey = Key.Backquote;
 #endif
