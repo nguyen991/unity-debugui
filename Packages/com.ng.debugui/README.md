@@ -155,12 +155,17 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
   whose build throws shows "Item failed: …" and the other items are still built.
 - **Null values** — `Label(label, getter)` shows `null`; a `string` `Field` shows an empty box.
 - **Safe area** — the window always stays inside `Screen.safeArea` (notches, rounded corners).
+- **Drawn on top of the game's UI** — `DebugUI.SortingOrder` (default `40000`) orders the debug UI among
+  UI Toolkit panels and *Screen Space – Overlay* canvases; higher draws on top. The default is above the
+  largest possible `Canvas.sortingOrder` (32767), so no uGUI canvas can cover it. Raise it if a UI Toolkit
+  panel of the game uses a higher `PanelSettings.sortingOrder`; lower it if a game popup must appear above
+  the debug UI. *Screen Space – Camera* and *World Space* canvases are drawn with the camera, below it.
 - **Phone-width screens** (< 600 panel px, class `ngdbg-narrow`) — slider labels move above the track so
   the track stays wide enough to drag. `Width` / `Height` still apply.
 - **`Each` inside `Horizontal`** — the items are laid out side by side and share the row's width.
 - **Several log panels** — every `LogPanel` call shares one log buffer; the `capacity` of the latest call
   applies.
-- **Settings reset** — `Width`, `Height`, `Scale`, `ToggleKey` and added style sheets go back to their defaults when the
+- **Settings reset** — `Width`, `Height`, `Scale`, `SortingOrder`, `ToggleKey` and added style sheets go back to their defaults when the
   app starts or Play Mode is entered (also with *Enter Play Mode Options* / no domain reload), so set them
   from startup code.
 
@@ -231,7 +236,7 @@ Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slide
 | Any build with scripting define `DEBUG_UI_DISABLED` | off everywhere (calls compile but do nothing) |
 
 The other members — `Open()`, `Close()`, `Toggle()`, `IsOpen`, `IsPointerOverUI`, `Width`, `Height`,
-`Scale`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
+`Scale`, `SortingOrder`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
 create any UI: `Open()` / `Close()` / `Toggle()` do nothing, `IsOpen` and `IsPointerOverUI` return `false`,
 and the settings are only stored.
 

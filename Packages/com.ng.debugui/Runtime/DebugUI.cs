@@ -208,6 +208,31 @@ namespace Ng.DebugTools
         static Key toggleKey = Key.Backquote;
 #endif
 
+        /// <summary>
+        /// Default <see cref="SortingOrder"/>: above every uGUI Canvas (whose sortingOrder is capped at
+        /// 32767), so no Screen Space - Overlay canvas can cover the debug UI.
+        /// </summary>
+        public const float DefaultSortingOrder = 40000f;
+
+        /// <summary>
+        /// Draw order of the debug UI among UI Toolkit panels and Screen Space - Overlay canvases: higher
+        /// draws on top. Default <see cref="DefaultSortingOrder"/>. Lower it if a game popup must appear
+        /// above the debug UI; raise it if a UI Toolkit panel of the game uses an even higher value.
+        /// </summary>
+        public static float SortingOrder
+        {
+            get => sortingOrder;
+            set
+            {
+                sortingOrder = float.IsNaN(value) ? DefaultSortingOrder : value;
+                var host = DebugUIHost.Instance;
+                if (host != null)
+                    host.SetSortingOrder(sortingOrder);
+            }
+        }
+
+        static float sortingOrder = DefaultSortingOrder;
+
         internal const float MinScale = 0.5f, MaxScale = 3f;
         static float scale = 1f;
 
@@ -239,7 +264,7 @@ namespace Ng.DebugTools
         internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
 
         /// <summary>
-        /// Back to defaults: full size, scale 1, no extra stylesheets, backquote shortcut. Also runs on entering play
+        /// Back to defaults: full size, scale 1, default sorting order, no extra stylesheets, backquote shortcut. Also runs on entering play
         /// mode so Enter Play Mode Options with domain reload disabled starts clean.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -253,6 +278,7 @@ namespace Ng.DebugTools
             width = height = 1f;
             ApplySize();
             Scale = 1f;
+            SortingOrder = DefaultSortingOrder;
 #if NG_DEBUGUI_INPUT_SYSTEM
             toggleKey = Key.Backquote;
 #endif

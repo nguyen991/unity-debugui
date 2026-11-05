@@ -36,7 +36,7 @@ namespace Ng.DebugTools.Tests
             var settings = Host.Document.panelSettings;
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.themeStyleSheet, Is.Not.Null);
-            Assert.That(settings.sortingOrder, Is.EqualTo(10000f));
+            Assert.That(settings.sortingOrder, Is.EqualTo(DebugUI.DefaultSortingOrder));
         }
 
         [Test]

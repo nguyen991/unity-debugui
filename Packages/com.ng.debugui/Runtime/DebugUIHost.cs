@@ -14,7 +14,6 @@ namespace Ng.DebugTools
     internal sealed class DebugUIHost : MonoBehaviour
     {
         internal const string ThemeResourcePath = "NgDebugUI/DebugUITheme";
-        internal const int SortingOrder = 10000;
 
         PanelSettings settings;
         Rect lastSafeArea;
@@ -60,7 +59,7 @@ namespace Ng.DebugTools
             settings.scaleMode = PanelScaleMode.ConstantPhysicalSize;
             settings.referenceDpi = 96;
             settings.fallbackDpi = 96;
-            settings.sortingOrder = SortingOrder;
+            settings.sortingOrder = DebugUI.SortingOrder;
             settings.scale = DebugUI.Scale;
 
             Document = gameObject.AddComponent<UIDocument>();
@@ -84,6 +83,8 @@ namespace Ng.DebugTools
             settings.scale = scale;
             lastScreenSize = default; // panel units per pixel changed: recompute safe-area insets
         }
+
+        internal void SetSortingOrder(float order) => settings.sortingOrder = order;
 
         internal void Open()
         {
