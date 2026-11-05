@@ -193,6 +193,16 @@
     flex-basis: 0;
 }
 
+/* Each() inside Horizontal: items side by side, sharing the row like direct children. */
+.ngdbg-horizontal > .ngdbg-each {
+    flex-direction: row;
+}
+
+.ngdbg-horizontal > .ngdbg-each > * {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
 /* Line(): horizontal rule in a column, vertical rule in a row. */
 .ngdbg-line {
     height: 1px;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Ng.DebugTools;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ public class DemoPlayer : MonoBehaviour
     public float jumpHeight = 2.5f;
     public string playerName = "Hero";
     public bool godMode;
+    public List<string> inventory = new List<string> { "Sword", "Shield" };
+    int potions;
 
     float nextDrain;
 
@@ -46,6 +49,12 @@ public class DemoPlayer : MonoBehaviour
                 .Button("Kill", () => hp = 0, new Color(0.75f, 0.2f, 0.2f))
                 .Line()
                 .Button("Destroy", () => Destroy(gameObject)))
+            .Foldout("Inventory", f => f
+                .Each(() => inventory, (item, b) => b.Horizontal(h => h
+                    .Label(item)
+                    .Button("Drop", () => inventory.Remove(item))))
+                .Button("Add potion", () => inventory.Add("Potion " + ++potions), new Color(0.3f, 0.45f, 0.8f)),
+                open: true)
             .Foldout("Advanced", f => f
                 .Slider("Gravity", () => Physics2D.gravity.y, v => Physics2D.gravity = new Vector2(0, v), -30, 0)
                 .Label("Position", () => transform.position)));

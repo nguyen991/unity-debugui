@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Ng.DebugTools
@@ -29,6 +30,13 @@ namespace Ng.DebugTools
 
         /// <summary>Empty space along the layout direction: height in a column, width inside <see cref="Horizontal"/>.</summary>
         IDebugBuilder Space(float size = 8f);
+
+        /// <summary>
+        /// One entry per item of a list, built with <paramref name="build"/>. The section is rebuilt
+        /// only when items are added, removed or replaced; changes inside an item (e.g. its hp) are
+        /// shown by the item's own getters. Works with List&lt;T&gt; and arrays; null shows nothing.
+        /// </summary>
+        IDebugBuilder Each<T>(Func<IReadOnlyList<T>> items, Action<T, IDebugBuilder> build);
 
         // Controls
 

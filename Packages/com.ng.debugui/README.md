@@ -53,6 +53,7 @@ DebugUI.Remove("Audio");
 | `Slider(label, get, set, min, max)` | slider + number box | `float` or `int` |
 | `Field(label, get, set)` | input box | `int`, `float`, `string`; `bool` shows a toggle. Setter runs on Enter / leaving the box |
 | `Vertical(b => …)`, `Horizontal(b => …)` | layout | children of a horizontal row share its width |
+| `Each(() => list, (item, b) => …)` | one entry per list item | rebuilt only when items are added/removed/replaced; see below |
 | `Line()` | thin separator | horizontal in a column, vertical inside `Horizontal` |
 | `Space(size = 8)` | empty space | height in a column, width inside `Horizontal` |
 | `Foldout(title, b => …, open)` | collapsible section | closed by default |
@@ -62,6 +63,25 @@ Leave the setter out (or pass `null`) to make a control read-only.
 Every builder method returns the builder, so calls chain: `p.Label("Build 1.2.3").Label("HP", () => hp)`.
 `Vertical` / `Horizontal` / `Foldout` return the *outer* builder, so the chain continues after the
 layout at the same level. Writing one statement per line (`p.Label(...); p.Label(...);`) works too.
+
+### Lists that change at runtime: `Each`
+
+```csharp
+DebugUI.Panel(this, "Enemies", p => p
+    .Each(() => enemies, (e, b) => b
+        .Label(e.name, () => e.hp)
+        .Button("Kill", () => e.hp = 0, Color.red))
+    .Button("Spawn", SpawnEnemy));
+```
+
+- The source is any `IReadOnlyList<T>` (`List<T>`, arrays); `null` shows nothing.
+- Only the `Each` section is rebuilt, and only when the list's items change (count, or an item replaced —
+  compared with `Equals`, i.e. by reference for classes). A change *inside* an item (`e.hp`) is shown by
+  that item's getters without a rebuild, and an unchanged list costs no allocations.
+- Don't call `DebugUI.Panel` every frame to change content — that rebuilds the whole panel (closing
+  foldouts, dropping focus). Use `Each` for content that grows and shrinks.
+- If the list changes while the tester is typing in a field *inside* that list, the typing is lost
+  (that section is rebuilt).
 
 ### How values stay in sync
 
@@ -143,6 +163,7 @@ Your rules win over the built-in ones with the same selector. If a built-in rule
 | `ngdbg-slider` | `Slider` |
 | `ngdbg-field` | `Field` (all types) |
 | `ngdbg-vertical`, `ngdbg-horizontal`, `ngdbg-foldout` | layouts |
+| `ngdbg-each` | the container of an `Each` section |
 | `ngdbg-line`, `ngdbg-space` | `Line()`, `Space()` (e.g. `.ngdbg-line { background-color: …; }`) |
 | `ngdbg-narrow` | added to `ngdbg-root` on phone-width screens (< 600 panel px) |
 | `ngdbg-error` | a control whose getter/setter threw |

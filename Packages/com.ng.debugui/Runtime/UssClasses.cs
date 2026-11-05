@@ -21,6 +21,7 @@ namespace Ng.DebugTools
         public const string Foldout = "ngdbg-foldout";
         public const string Line = "ngdbg-line";
         public const string Space = "ngdbg-space";
+        public const string Each = "ngdbg-each";
 
         // Window
         public const string Panel = "ngdbg-panel";

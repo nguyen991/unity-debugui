@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -51,6 +52,15 @@ namespace Ng.DebugTools
             space.style.flexGrow = 0f;
             space.style.flexShrink = 0f;
             container.Add(space);
+            return this;
+        }
+
+        public IDebugBuilder Each<T>(Func<IReadOnlyList<T>> items, Action<T, IDebugBuilder> build)
+        {
+            var section = new VisualElement();
+            section.AddToClassList(UssClasses.Each);
+            container.Add(section);
+            group.Add(new EachBinding<T>(section, items, build));
             return this;
         }
 
