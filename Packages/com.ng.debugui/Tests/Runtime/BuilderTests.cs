@@ -2,7 +2,7 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     public class BuilderTests
     {

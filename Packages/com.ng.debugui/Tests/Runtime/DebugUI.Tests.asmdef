@@ -1,6 +1,6 @@
 {
     "name": "DebugUI.Tests",
-    "rootNamespace": "Ng.DebugUI.Tests",
+    "rootNamespace": "Ng.DebugTools.Tests",
     "references": [
         "DebugUI.Runtime",
         "UnityEngine.TestRunner",

@@ -8,7 +8,7 @@ using UnityEngine.TestTools.Constraints;
 using UnityEngine.UIElements;
 using Is = UnityEngine.TestTools.Constraints.Is;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     public class BindingTests
     {

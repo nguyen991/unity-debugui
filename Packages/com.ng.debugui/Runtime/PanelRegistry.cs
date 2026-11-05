@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>One registered panel: its built UI and the bindings that keep it live.</summary>
     internal sealed class PanelEntry

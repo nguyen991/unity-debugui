@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>
     /// Binds a getter/setter pair to a UI element. The getter is polled by <see cref="Refresh"/>

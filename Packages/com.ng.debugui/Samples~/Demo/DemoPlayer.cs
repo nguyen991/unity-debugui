@@ -1,4 +1,4 @@
-using Ng.DebugUI;
+using Ng.DebugTools;
 using UnityEngine;
 
 /// <summary>

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     /// <summary>
     /// A throwaway runtime UIDocument so test elements live in a real panel.

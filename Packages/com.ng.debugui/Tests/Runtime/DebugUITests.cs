@@ -9,7 +9,7 @@ using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     public class DebugUITests
     {

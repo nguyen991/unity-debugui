@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>
     /// A tree of bindings. A closed group (e.g. a collapsed foldout) skips its bindings

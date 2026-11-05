@@ -1,6 +1,6 @@
 {
     "name": "DebugUI.Runtime",
-    "rootNamespace": "Ng.DebugUI",
+    "rootNamespace": "Ng.DebugTools",
     "references": [
         "Unity.InputSystem"
     ],

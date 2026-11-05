@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     static class TestUtil
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>
     /// Declares the content of a debug panel. Every value control binds to the game with a

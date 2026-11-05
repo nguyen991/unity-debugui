@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 #endif
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>
     /// Owns the runtime UIDocument and drives refresh. Created lazily by <see cref="DebugUI"/>

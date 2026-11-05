@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>
     /// The visual shell: a floating toggle button and a window with a tab per panel.

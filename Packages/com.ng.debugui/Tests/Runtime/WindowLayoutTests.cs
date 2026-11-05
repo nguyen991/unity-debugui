@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     public class WindowLayoutTests
     {

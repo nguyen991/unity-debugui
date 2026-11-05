@@ -1,4 +1,4 @@
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>A live link between a game value and a UI element.</summary>
     internal interface IBinding

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI.Tests
+namespace Ng.DebugTools.Tests
 {
     /// <summary>Regression tests for findings from the final code review.</summary>
     public class ReviewFixTests

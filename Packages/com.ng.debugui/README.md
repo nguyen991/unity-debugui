@@ -12,7 +12,7 @@ Requires Unity 6000.0 or newer.
 ## Usage
 
 ```csharp
-using Ng.DebugUI;
+using Ng.DebugTools;
 using UnityEngine;
 
 public class Player : MonoBehaviour

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 #endif
 using Debug = UnityEngine.Debug;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>
     /// Entry point for building in-game debug panels.

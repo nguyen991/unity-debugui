@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ng.DebugUI
+namespace Ng.DebugTools
 {
     /// <summary>Builds UI Toolkit elements into a container and registers their bindings in a group.</summary>
     internal sealed class DebugBuilder : IDebugBuilder
