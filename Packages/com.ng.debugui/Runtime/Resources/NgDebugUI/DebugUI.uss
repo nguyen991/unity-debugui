@@ -13,22 +13,14 @@
 
 /* ---------- Window ---------- */
 
+/* Width/height come from DebugUI.Width / DebugUI.Height (inline %, anchored top-right). */
 .ngdbg-window {
     position: absolute;
     top: 0;
     right: 0;
-    bottom: 56px;
-    width: 380px;
     background-color: rgba(22, 22, 28, 0.92);
     border-bottom-left-radius: 6px;
     padding: 4px;
-}
-
-.ngdbg-narrow .ngdbg-window {
-    left: 0;
-    right: 0;
-    width: auto;
-    border-bottom-left-radius: 0;
 }
 
 .ngdbg-tabbar {
@@ -59,6 +51,11 @@
 
 .ngdbg-content {
     flex-grow: 1;
+}
+
+/* Room at the end so the last control can scroll clear of the floating DBG button. */
+.ngdbg-content > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    padding-bottom: 56px;
 }
 
 .ngdbg-panel {

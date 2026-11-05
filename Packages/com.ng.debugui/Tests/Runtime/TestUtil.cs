@@ -9,7 +9,8 @@ namespace Ng.DebugTools.Tests
         public static void Reset()
         {
             DebugUI.ForceDisabled = false;
-            DebugUI.PanelWidth = null;
+            DebugUI.Width = 1f;
+            DebugUI.Height = 1f;
             DebugUIHost.DestroyInstance();
         }
 

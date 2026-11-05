@@ -13,7 +13,8 @@ public static class DemoTimePanel
         {
             p.Slider("Time scale", () => Time.timeScale, v => Time.timeScale = v, 0, 2);
             p.Label("FPS", () => Mathf.RoundToInt(1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f)));
-            p.Slider("Panel width", () => DebugUI.PanelWidth ?? 0.5f, v => DebugUI.PanelWidth = v, 0.5f, 1f);
+            p.Slider("Window width", () => DebugUI.Width, v => DebugUI.Width = v, 0.5f, 1f);
+            p.Slider("Window height", () => DebugUI.Height, v => DebugUI.Height = v, 0.5f, 1f);
             p.Button("Remove me", () => DebugUI.Remove("Time"));
         });
     }

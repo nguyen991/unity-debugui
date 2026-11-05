@@ -77,13 +77,13 @@ Leave the setter out (or pass `null`) to make a control read-only.
 - Tap / click the round **DBG** button (bottom-right), or press **`** (backquote) when the
   Input System package is installed.
 - From code: `DebugUI.Open()`, `DebugUI.Close()`, `DebugUI.Toggle()`, `DebugUI.IsOpen`.
-- `DebugUI.PanelWidth` sets the window width as a fraction of the screen, from `0.5f` (half) to `1f`
-  (full width); it stays anchored right and leaves room for the DBG button at the bottom. Leave it
-  `null` (default) for the automatic layout: a 380px column on wide screens, full width on phones.
+- `DebugUI.Width` / `DebugUI.Height` size the window as a fraction of the screen, from `0.5f` (half)
+  to `1f` (full, the default). The window is anchored to the top-right; the DBG button floats over its
+  bottom-right corner.
 
 ```csharp
-DebugUI.PanelWidth = 0.75f;  // three quarters of the screen
-DebugUI.PanelWidth = null;   // back to automatic
+DebugUI.Width = 0.5f;   // right half of the screen
+DebugUI.Height = 0.6f;  // top 60%
 ```
 
 - `DebugUI.IsPointerOverUI` tells gameplay code that the pointer is over the debug UI, so a tap on the

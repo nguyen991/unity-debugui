@@ -115,31 +115,49 @@ namespace Ng.DebugTools
         }
 
         /// <summary>
-        /// Width of the debug window as a fraction of the screen (safe area) width, from 0.5 (half)
-        /// to 1 (full width). Values outside the range are clamped. The window stays on the right.
-        /// Null (default) keeps the automatic layout: a 380px column on wide screens, full width on
-        /// phone-sized screens. Can be set before the UI exists.
+        /// Width of the debug window as a fraction of the screen (safe area) width: 0.5 = half,
+        /// 1 = full width (default). Clamped to [0.5, 1]. The window is anchored top-right.
+        /// Can be set before the UI exists.
         /// </summary>
-        public static float? PanelWidth
+        public static float Width
         {
-            get => panelWidth;
+            get => width;
             set
             {
-                panelWidth = value.HasValue
-                    ? (float.IsNaN(value.Value) ? 1f : Mathf.Clamp(value.Value, MinPanelWidth, 1f))
-                    : (float?)null;
-                var host = DebugUIHost.Instance;
-                if (host != null)
-                    host.Window.SetWidthFraction(panelWidth);
+                width = ClampSize(value);
+                ApplySize();
             }
         }
 
-        internal const float MinPanelWidth = 0.5f;
-        static float? panelWidth;
+        /// <summary>
+        /// Height of the debug window as a fraction of the screen (safe area) height: 0.5 = top
+        /// half, 1 = full height (default). Clamped to [0.5, 1].
+        /// </summary>
+        public static float Height
+        {
+            get => height;
+            set
+            {
+                height = ClampSize(value);
+                ApplySize();
+            }
+        }
+
+        internal const float MinSize = 0.5f;
+        static float width = 1f, height = 1f;
+
+        static float ClampSize(float v) => float.IsNaN(v) ? 1f : Mathf.Clamp(v, MinSize, 1f);
+
+        static void ApplySize()
+        {
+            var host = DebugUIHost.Instance;
+            if (host != null)
+                host.Window.SetSize(width, height);
+        }
 
         /// <summary>Supports Enter Play Mode Options with domain reload disabled.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetSettings() => panelWidth = null;
+        static void ResetSettings() => width = height = 1f;
 
         public static void Open()
         {

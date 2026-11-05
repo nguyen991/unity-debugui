@@ -67,7 +67,7 @@ namespace Ng.DebugTools
 
             Registry = new PanelRegistry();
             Window = new DebugUIWindow(Document.rootVisualElement, Registry);
-            Window.SetWidthFraction(DebugUI.PanelWidth);
+            Window.SetSize(DebugUI.Width, DebugUI.Height);
             Window.ToggleRequested += Toggle;
             Window.CurrentChanged += () =>
             {
