@@ -73,6 +73,21 @@ namespace Ng.DebugTools
             DebugUIHost.GetOrCreate().Registry.AddOrReplace(owner, name, build);
         }
 
+        /// <summary>
+        /// Registers the built-in log panel: Log / Warning / Error filters with counts, Clear, text
+        /// search, and a details view with the stack trace. Logs are captured from this call on
+        /// (from any thread), keeping the newest <paramref name="capacity"/> entries — call it early,
+        /// e.g. in the first scene's Awake.
+        /// </summary>
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("DEBUG_UI_ENABLED")]
+        public static void LogPanel(string name = "Logs", int capacity = 500)
+        {
+            if (!Enabled)
+                return;
+            var store = LogStore.GetShared(Mathf.Clamp(capacity, 1, 100000));
+            Panel(null, name, p => LogView.Build((DebugBuilder)p, store));
+        }
+
         /// <summary>Removes a panel by name.</summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("DEBUG_UI_ENABLED")]
         public static void Remove(string name)

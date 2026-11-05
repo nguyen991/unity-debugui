@@ -246,3 +246,65 @@
 .ngdbg-narrow .unity-base-field__label {
     min-width: 90px;
 }
+
+/* ---------- Built-in log panel (DebugUI.LogPanel) ---------- */
+
+.ngdbg-log-toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.ngdbg-log-filter {
+    min-height: 32px;
+    margin-right: 12px;
+}
+
+.ngdbg-log-toolbar > .ngdbg-button {
+    margin-left: auto;
+    min-width: 72px;
+}
+
+.ngdbg-log-search {
+    min-height: 32px;
+    margin: 2px 0 4px 0;
+}
+
+.ngdbg-log-list {
+    height: 320px;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+.ngdbg-log-row {
+    height: 100%;
+    padding: 0 6px;
+    font-size: 12px;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* The default selection color is light grey, unreadable with the light row text. */
+.ngdbg-log-list .unity-collection-view__item--selected {
+    background-color: rgb(70, 110, 200);
+}
+
+.ngdbg-root .ngdbg-log-row--warning {
+    color: rgb(255, 205, 90);
+}
+
+.ngdbg-root .ngdbg-log-row--error {
+    color: rgb(255, 105, 105);
+}
+
+.ngdbg-log-details {
+    margin-top: 4px;
+    padding: 6px;
+    font-size: 12px;
+    white-space: normal;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 4px;
+}

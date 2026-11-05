@@ -10,6 +10,7 @@ namespace Ng.DebugTools.Tests
         {
             DebugUI.ForceDisabled = false;
             DebugUI.ResetSettings();
+            LogStore.ResetShared();
             DebugUIHost.DestroyInstance();
         }
 

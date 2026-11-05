@@ -83,6 +83,22 @@ DebugUI.Panel(this, "Enemies", p => p
 - If the list changes while the tester is typing in a field *inside* that list, the typing is lost
   (that section is rebuilt).
 
+### Built-in log panel
+
+```csharp
+DebugUI.LogPanel();                          // a "Logs" tab, keeps the newest 500 entries
+DebugUI.LogPanel("Console", capacity: 2000); // custom tab name / size
+```
+
+- Log / Warning / Error filter toggles with counts, **Clear**, and a text search (case-insensitive).
+- Oldest first; follows new entries while you are scrolled to the bottom. Warnings are yellow,
+  errors/exceptions red. Tap an entry to see the full message and stack trace (selectable to copy).
+- Captures from the moment you call it, from any thread — call it early (e.g. the first scene's
+  `Awake`). Logs keep being captured while the debug UI is closed.
+- Stripped from release builds like `Panel` (same `[Conditional]` rules).
+- Style hooks: `ngdbg-log`, `ngdbg-log-toolbar`, `ngdbg-log-filter`, `ngdbg-log-search`, `ngdbg-log-list`,
+  `ngdbg-log-row` (`--warning`, `--error`), `ngdbg-log-details`.
+
 ### How values stay in sync
 
 - Each panel is built **once**. While the debug UI is open, the getters of the **visible** panel are

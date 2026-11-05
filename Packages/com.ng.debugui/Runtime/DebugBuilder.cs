@@ -64,6 +64,15 @@ namespace Ng.DebugTools
             return this;
         }
 
+        /// <summary>Adds a prebuilt element (and its binding) — used by built-in panels.</summary>
+        internal DebugBuilder AddElement(VisualElement element, IBinding binding = null)
+        {
+            container.Add(element);
+            if (binding != null)
+                group.Add(binding);
+            return this;
+        }
+
         IDebugBuilder Nest(string className, Action<IDebugBuilder> build)
         {
             var element = new VisualElement();
