@@ -1,0 +1,8 @@
+/* Used by StyleTests: a game-side stylesheet overriding the package theme. */
+.ngdbg-root {
+    font-size: 22px;
+}
+
+.ngdbg-button {
+    background-color: rgb(255, 0, 0);
+}

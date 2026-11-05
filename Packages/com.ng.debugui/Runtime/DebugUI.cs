@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UIElements;
 #if NG_DEBUGUI_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -155,9 +157,68 @@ namespace Ng.DebugTools
                 host.Window.SetSize(width, height);
         }
 
-        /// <summary>Supports Enter Play Mode Options with domain reload disabled.</summary>
+        /// <summary>
+        /// Scales the whole debug UI — text, controls and touch targets together — on top of the
+        /// automatic DPI scaling. 1 = default, 1.5 = 50% bigger. Clamped to [0.5, 3].
+        /// </summary>
+        public static float Scale
+        {
+            get => scale;
+            set
+            {
+                scale = float.IsNaN(value) ? 1f : Mathf.Clamp(value, MinScale, MaxScale);
+                var host = DebugUIHost.Instance;
+                if (host != null)
+                    host.SetScale(scale);
+            }
+        }
+
+        internal const float MinScale = 0.5f, MaxScale = 3f;
+        static float scale = 1f;
+
+        /// <summary>
+        /// Adds a USS stylesheet on top of the built-in theme, e.g. to change fonts or colors.
+        /// Target the "ngdbg-*" classes listed in the README. Can be called before the UI exists.
+        /// </summary>
+        public static void AddStyleSheet(StyleSheet styleSheet)
+        {
+            if (styleSheet == null || styleSheets.Contains(styleSheet))
+                return;
+            styleSheets.Add(styleSheet);
+            var host = DebugUIHost.Instance;
+            if (host != null)
+                host.Window.Root.styleSheets.Add(styleSheet);
+        }
+
+        public static void RemoveStyleSheet(StyleSheet styleSheet)
+        {
+            if (styleSheet == null || !styleSheets.Remove(styleSheet))
+                return;
+            var host = DebugUIHost.Instance;
+            if (host != null)
+                host.Window.Root.styleSheets.Remove(styleSheet);
+        }
+
+        static readonly List<StyleSheet> styleSheets = new List<StyleSheet>();
+
+        internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
+
+        /// <summary>
+        /// Back to defaults: full size, scale 1, no extra stylesheets. Also runs on entering play
+        /// mode so Enter Play Mode Options with domain reload disabled starts clean.
+        /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetSettings() => width = height = 1f;
+        internal static void ResetSettings()
+        {
+            var host = DebugUIHost.Instance;
+            if (host != null)
+                foreach (var sheet in styleSheets)
+                    host.Window.Root.styleSheets.Remove(sheet);
+            styleSheets.Clear();
+            width = height = 1f;
+            ApplySize();
+            Scale = 1f;
+        }
 
         public static void Open()
         {

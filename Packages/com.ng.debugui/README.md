@@ -94,6 +94,59 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
     Shoot();
 ```
 
+## Styling
+
+### Size of everything: `DebugUI.Scale`
+
+```csharp
+DebugUI.Scale = 1.5f;   // text, controls and touch targets 50% bigger (range 0.5 – 3, default 1)
+```
+
+The UI already scales with the screen's DPI, so a control has about the same physical size on a
+phone and a monitor; `Scale` multiplies that. Prefer it over a bigger `font-size` alone, which can
+overflow the 32px-high controls.
+
+### Fonts, colors, spacing: your own USS
+
+Create a `.uss` file in your project and add it on top of the built-in theme:
+
+```css
+/* Assets/DebugUI/MyDebugUI.uss */
+.ngdbg-root   { font-size: 16px; }                         /* all text */
+.ngdbg-window { background-color: rgba(0, 0, 0, 0.8); }
+.ngdbg-button { background-color: rgb(40, 90, 60); }
+.ngdbg-tab--selected { background-color: rgb(200, 80, 40); }
+```
+
+```csharp
+[SerializeField] StyleSheet debugStyle;
+
+void Awake() => DebugUI.AddStyleSheet(debugStyle);   // DebugUI.RemoveStyleSheet(debugStyle) to undo
+```
+
+Your rules win over the built-in ones with the same selector. If a built-in rule is more specific
+(see `Runtime/Resources/NgDebugUI/DebugUI.uss`), use at least the same selector, e.g.
+`.ngdbg-root Label { color: … }`.
+
+| Class | Element |
+|---|---|
+| `ngdbg-root` | full-screen container (set `font-size`, `color` here to affect everything) |
+| `ngdbg-window` | the debug window |
+| `ngdbg-tabbar`, `ngdbg-tab`, `ngdbg-tab--selected` | tab bar and tabs |
+| `ngdbg-content` | scrolling area holding the current panel |
+| `ngdbg-panel` | root of each panel |
+| `ngdbg-toggle` | the round DBG button |
+| `ngdbg-text` | `Label(text)` |
+| `ngdbg-row`, `ngdbg-row-label`, `ngdbg-value` | `Label(label, getter)` row, its name and its value |
+| `ngdbg-button` | `Button` |
+| `ngdbg-slider` | `Slider` |
+| `ngdbg-field` | `Field` (all types) |
+| `ngdbg-vertical`, `ngdbg-horizontal`, `ngdbg-foldout` | layouts |
+| `ngdbg-narrow` | added to `ngdbg-root` on phone-width screens (< 600 panel px) |
+| `ngdbg-error` | a control whose getter/setter threw |
+
+Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slider .unity-base-slider__dragger`.
+
 ## Builds
 
 | Build | Debug UI |

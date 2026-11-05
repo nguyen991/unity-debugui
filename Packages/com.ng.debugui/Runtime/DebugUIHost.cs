@@ -61,6 +61,7 @@ namespace Ng.DebugTools
             settings.referenceDpi = 96;
             settings.fallbackDpi = 96;
             settings.sortingOrder = SortingOrder;
+            settings.scale = DebugUI.Scale;
 
             Document = gameObject.AddComponent<UIDocument>();
             Document.panelSettings = settings;
@@ -68,12 +69,20 @@ namespace Ng.DebugTools
             Registry = new PanelRegistry();
             Window = new DebugUIWindow(Document.rootVisualElement, Registry);
             Window.SetSize(DebugUI.Width, DebugUI.Height);
+            foreach (var sheet in DebugUI.StyleSheets)
+                Window.Root.styleSheets.Add(sheet);
             Window.ToggleRequested += Toggle;
             Window.CurrentChanged += () =>
             {
                 if (IsOpen)
                     RefreshNow();
             };
+        }
+
+        internal void SetScale(float scale)
+        {
+            settings.scale = scale;
+            lastScreenSize = default; // panel units per pixel changed: recompute safe-area insets
         }
 
         internal void Open()

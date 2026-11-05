@@ -28,8 +28,7 @@ public class DemoPlayer : MonoBehaviour
 
     void OnEnable()
     {
-        // `this` is the owner: the panel disappears automatically when this object is destroyed.
-        DebugUI.Width = 1f;
+        // `this` is the owner: the panel disappears automatically when this object is destroyed.        
         DebugUI.Panel(this, "Player", p =>
         {
             p.Label("Build 1.2.3");
