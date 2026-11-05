@@ -5,9 +5,48 @@ watch values while the game runs — on desktop (mouse) and mobile (touch). No p
 
 ## Install
 
-The package lives in `Packages/com.ng.debugui`. To use it in another project, copy that folder into the
-project's `Packages/` folder (or add it via *Package Manager → Install package from disk*).
-Requires Unity 6000.0 or newer.
+Requires Unity 6000.0 or newer. The keyboard shortcut and `DebugUI.IsPointerOverUI` also need the
+Input System package (`com.unity.inputsystem`); everything else works without it.
+
+### From a Git URL (recommended)
+
+Git must be installed and on the `PATH` (restart Unity / Unity Hub after installing it).
+
+1. *Window → Package Manager*.
+2. **+** (top-left) → **Install package from git URL…**
+3. Paste and press **Install**:
+
+```
+https://github.com/nguyen991/unity-debugui.git?path=/Packages/com.ng.debugui
+```
+
+Or add it to `Packages/manifest.json` by hand:
+
+```json
+{
+  "dependencies": {
+    "com.ng.debugui": "https://github.com/nguyen991/unity-debugui.git?path=/Packages/com.ng.debugui",
+    ...
+  }
+}
+```
+
+`?path=` is needed because the package is in a sub-folder of the repository.
+
+**Pin a version** by adding a tag, branch or commit hash after `#`, so every machine gets the same code:
+
+```
+https://github.com/nguyen991/unity-debugui.git?path=/Packages/com.ng.debugui#v0.1.0
+```
+
+**Update** — without `#…`, Unity records the commit it installed in `Packages/packages-lock.json` and
+keeps using it. To get the latest `main`, click **Update** on the package in the Package Manager (or
+delete the `com.ng.debugui` entry from `packages-lock.json`). With a pinned version, change the `#…` part.
+
+### From a local copy
+
+Copy the `Packages/com.ng.debugui` folder into the project's `Packages/` folder, or use
+*Package Manager → + → Install package from disk…* and pick its `package.json`.
 
 ## Usage
 
@@ -187,7 +226,8 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
 ### Size of everything: `DebugUI.Scale`
 
 ```csharp
-DebugUI.Scale = 1.5f;   // text, controls and touch targets 50% bigger (range 0.5 – 3, default 1)
+DebugUI.Scale = 2.5f;   // text, controls and touch targets bigger (range 0.5 – 3, default 2)
+DebugUI.Scale = 1f;     // the theme's base size: smaller, fits more on screen
 ```
 
 The UI already scales with the screen's DPI, so a control has about the same physical size on a
