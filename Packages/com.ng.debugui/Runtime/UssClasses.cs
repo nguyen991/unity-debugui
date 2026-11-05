@@ -28,5 +28,6 @@ namespace Ng.DebugUI
         public const string TabSelected = "ngdbg-tab--selected";
         public const string Content = "ngdbg-content";
         public const string Toggle = "ngdbg-toggle";
+        public const string Narrow = "ngdbg-narrow";
     }
 }

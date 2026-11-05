@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Ng.DebugUI
@@ -9,6 +10,9 @@ namespace Ng.DebugUI
     /// </summary>
     internal sealed class DebugUIWindow
     {
+        /// <summary>Panel widths below this use the full-width (phone) layout.</summary>
+        internal const float NarrowBreakpoint = 600f;
+
         readonly PanelRegistry registry;
 
         public DebugUIWindow(VisualElement documentRoot, PanelRegistry registry)
@@ -36,6 +40,8 @@ namespace Ng.DebugUI
             Root.Add(ToggleButton);
             documentRoot.Add(Root);
 
+            Root.RegisterCallback<GeometryChangedEvent>(e => ApplyWidth(e.newRect.width));
+
             registry.Changed += Rebuild;
             Rebuild();
             SetOpen(false);
@@ -54,6 +60,33 @@ namespace Ng.DebugUI
 
         public void SetOpen(bool open)
             => Window.style.display = open ? DisplayStyle.Flex : DisplayStyle.None;
+
+        internal void ApplyWidth(float panelWidth)
+            => Root.EnableInClassList(UssClasses.Narrow, panelWidth < NarrowBreakpoint);
+
+        /// <summary>
+        /// Insets (left, top, right, bottom) in screen pixels between the screen edges and the safe
+        /// area. Screen coordinates have their origin at the bottom-left.
+        /// </summary>
+        internal static Vector4 SafeAreaInsets(Rect safeArea, Vector2 screenSize)
+            => new Vector4(
+                safeArea.xMin,
+                screenSize.y - safeArea.yMax,
+                screenSize.x - safeArea.xMax,
+                safeArea.yMin);
+
+        /// <summary>
+        /// Shrinks the (absolutely positioned) root to the safe area so nothing is drawn under
+        /// notches or rounded corners. Offsets rather than padding, because the window and toggle
+        /// are absolutely positioned children.
+        /// </summary>
+        internal void ApplySafeArea(Vector4 insetsInPanelUnits)
+        {
+            Root.style.left = insetsInPanelUnits.x;
+            Root.style.top = insetsInPanelUnits.y;
+            Root.style.right = insetsInPanelUnits.z;
+            Root.style.bottom = insetsInPanelUnits.w;
+        }
 
         public void Select(string name)
         {

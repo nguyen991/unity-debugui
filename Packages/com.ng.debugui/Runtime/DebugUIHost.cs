@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+#if NG_DEBUGUI_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace Ng.DebugUI
 {
@@ -14,6 +17,8 @@ namespace Ng.DebugUI
         internal const int SortingOrder = 10000;
 
         PanelSettings settings;
+        Rect lastSafeArea;
+        Vector2Int lastScreenSize;
 
         internal static DebugUIHost Instance { get; private set; }
 
@@ -94,6 +99,7 @@ namespace Ng.DebugUI
         internal void Tick()
         {
             Registry.RemoveDestroyedOwners();
+            UpdateSafeArea();
             if (IsOpen)
                 Window.Current?.Bindings.Refresh();
         }
@@ -107,7 +113,52 @@ namespace Ng.DebugUI
             current.Bindings.Refresh();
         }
 
-        void Update() => Tick();
+        /// <summary>True if a panel-space position hits any debug UI element (window, tab, toggle).</summary>
+        internal bool IsOverUI(Vector2 panelPosition)
+        {
+            var panel = Document != null ? Document.rootVisualElement?.panel : null;
+            return panel != null && panel.Pick(panelPosition) != null;
+        }
+
+        /// <summary>Screen position (origin bottom-left, as Input System reports it) → hit test.</summary>
+        internal bool IsOverUIScreen(Vector2 screenPosition)
+        {
+            var panel = Document != null ? Document.rootVisualElement?.panel : null;
+            if (panel == null)
+                return false;
+            var flipped = new Vector2(screenPosition.x, Screen.height - screenPosition.y);
+            return IsOverUI(RuntimePanelUtils.ScreenToPanel(panel, flipped));
+        }
+
+        void UpdateSafeArea()
+        {
+            var safe = Screen.safeArea;
+            var size = new Vector2Int(Screen.width, Screen.height);
+            if (safe == lastSafeArea && size == lastScreenSize)
+                return;
+            var panel = Document.rootVisualElement.panel;
+            if (panel == null || size.x <= 0 || size.y <= 0)
+                return;
+
+            lastSafeArea = safe;
+            lastScreenSize = size;
+            var insets = DebugUIWindow.SafeAreaInsets(safe, size);
+            // Panel units per screen pixel, from the panel's own scaling.
+            var panelSize = RuntimePanelUtils.ScreenToPanel(panel, new Vector2(size.x, size.y))
+                            - RuntimePanelUtils.ScreenToPanel(panel, Vector2.zero);
+            float sx = panelSize.x / size.x, sy = panelSize.y / size.y;
+            Window.ApplySafeArea(new Vector4(insets.x * sx, insets.y * sy, insets.z * sx, insets.w * sy));
+        }
+
+        void Update()
+        {
+#if NG_DEBUGUI_INPUT_SYSTEM
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.backquoteKey.wasPressedThisFrame)
+                Toggle();
+#endif
+            Tick();
+        }
 
         void OnDestroy()
         {

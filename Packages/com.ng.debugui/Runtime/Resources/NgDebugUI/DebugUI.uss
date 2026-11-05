@@ -1,0 +1,194 @@
+/* Ng Debug UI — fixed theme. Sizes are in panel px; the panel uses ConstantPhysicalSize at
+   96 reference DPI, so 32px ≈ 8.5mm: comfortable for fingers, compact for a mouse. */
+
+.ngdbg-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 14px;
+    color: rgb(225, 225, 230);
+}
+
+/* ---------- Window ---------- */
+
+.ngdbg-window {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 56px;
+    width: 380px;
+    background-color: rgba(22, 22, 28, 0.92);
+    border-bottom-left-radius: 6px;
+    padding: 4px;
+}
+
+.ngdbg-narrow .ngdbg-window {
+    left: 0;
+    right: 0;
+    width: auto;
+    border-bottom-left-radius: 0;
+}
+
+.ngdbg-tabbar {
+    flex-shrink: 0;
+    max-height: 48px;
+    margin-bottom: 4px;
+}
+
+.ngdbg-tabbar .unity-scroll-view__content-container {
+    flex-direction: row;
+}
+
+.ngdbg-tab {
+    min-height: 32px;
+    padding: 0 14px;
+    margin: 0 2px 0 0;
+    border-width: 0;
+    border-radius: 4px;
+    background-color: rgb(48, 48, 58);
+    color: rgb(190, 190, 200);
+    -unity-font-style: bold;
+}
+
+.ngdbg-tab--selected {
+    background-color: rgb(70, 110, 200);
+    color: rgb(255, 255, 255);
+}
+
+.ngdbg-content {
+    flex-grow: 1;
+}
+
+.ngdbg-panel {
+    padding: 0 4px 8px 4px;
+}
+
+/* ---------- Toggle button ---------- */
+
+.ngdbg-toggle {
+    position: absolute;
+    right: 8px;
+    bottom: 4px;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    border-radius: 24px;
+    border-width: 0;
+    background-color: rgba(70, 110, 200, 0.85);
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+/* ---------- Controls ---------- */
+
+.ngdbg-root Label {
+    color: rgb(225, 225, 230);
+}
+
+.ngdbg-text {
+    min-height: 32px;
+    -unity-text-align: middle-left;
+    white-space: normal;
+}
+
+.ngdbg-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 32px;
+}
+
+.ngdbg-value {
+    -unity-text-align: middle-right;
+    -unity-font-style: bold;
+}
+
+.ngdbg-button {
+    min-height: 32px;
+    margin: 2px;
+    border-width: 0;
+    border-radius: 4px;
+    background-color: rgb(58, 58, 70);
+    color: rgb(235, 235, 240);
+}
+
+.ngdbg-button:hover {
+    background-color: rgb(72, 72, 88);
+}
+
+.ngdbg-button:active {
+    background-color: rgb(70, 110, 200);
+}
+
+.ngdbg-field,
+.ngdbg-slider {
+    min-height: 32px;
+    margin: 2px 0;
+    align-items: center;
+}
+
+.ngdbg-root .unity-base-field__label {
+    min-width: 110px;
+    color: rgb(200, 200, 210);
+}
+
+.ngdbg-root .unity-base-text-field__input {
+    min-height: 28px;
+    background-color: rgb(40, 40, 50);
+    color: rgb(235, 235, 240);
+    border-color: rgb(70, 70, 85);
+}
+
+.ngdbg-slider .unity-base-slider__input {
+    min-height: 28px;
+}
+
+.ngdbg-slider .unity-base-slider__dragger {
+    width: 18px;
+    height: 18px;
+    margin-top: -9px;
+    border-radius: 9px;
+}
+
+.ngdbg-slider .unity-slider__input-field,
+.ngdbg-slider .unity-slider-int__input-field {
+    width: 64px;
+}
+
+.ngdbg-root .unity-toggle__checkmark {
+    width: 22px;
+    height: 22px;
+}
+
+.ngdbg-foldout {
+    margin-top: 2px;
+}
+
+.ngdbg-foldout > .unity-foldout__toggle {
+    min-height: 32px;
+    margin: 0;
+}
+
+.ngdbg-foldout > .unity-foldout__toggle .unity-label {
+    -unity-font-style: bold;
+}
+
+/* ---------- Layouts ---------- */
+
+.ngdbg-horizontal {
+    flex-direction: row;
+}
+
+.ngdbg-horizontal > * {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.ngdbg-error,
+.ngdbg-root .ngdbg-error Label,
+.ngdbg-root Label.ngdbg-error {
+    color: rgb(255, 90, 90);
+}

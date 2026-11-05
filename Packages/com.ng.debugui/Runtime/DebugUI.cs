@@ -1,6 +1,9 @@
 using System;
 using System.Diagnostics;
 using UnityEngine;
+#if NG_DEBUGUI_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 using Debug = UnityEngine.Debug;
 
 namespace Ng.DebugUI
@@ -71,6 +74,27 @@ namespace Ng.DebugUI
                     return false;
                 var host = DebugUIHost.Instance;
                 return host != null && host.IsOpen;
+            }
+        }
+
+        /// <summary>
+        /// True when the mouse / touch pointer is over the debug UI. Check it before handling a
+        /// click in gameplay code so taps on the debug UI don't also hit the game. Requires the
+        /// Input System package; always false without it.
+        /// </summary>
+        public static bool IsPointerOverUI
+        {
+            get
+            {
+#if NG_DEBUGUI_INPUT_SYSTEM
+                if (!Enabled)
+                    return false;
+                var host = DebugUIHost.Instance;
+                var pointer = Pointer.current;
+                return host != null && pointer != null && host.IsOverUIScreen(pointer.position.ReadValue());
+#else
+                return false;
+#endif
             }
         }
 
