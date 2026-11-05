@@ -1,0 +1,10 @@
+{
+  "name": "com.ng.debugui",
+  "version": "0.1.0",
+  "displayName": "Ng Debug UI",
+  "description": "In-game debug UI builder for UI Toolkit. Declare panels with lambdas to tweak and preview values at runtime on mouse and touch devices.",
+  "unity": "6000.0",
+  "dependencies": {
+    "com.unity.modules.uielements": "1.0.0"
+  }
+}
