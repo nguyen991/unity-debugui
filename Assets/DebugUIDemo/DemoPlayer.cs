@@ -12,6 +12,7 @@ public class DemoPlayer : MonoBehaviour
     public float speed = 90f;          // degrees per second
     public int level = 1;
     public int gold = 120;
+    public int score;                  // changes on its own: type in it to check edits aren't overwritten
     public float jumpHeight = 2.5f;
     public string playerName = "Hero";
     public bool godMode;
@@ -35,6 +36,7 @@ public class DemoPlayer : MonoBehaviour
             p.Slider("Speed", () => speed, v => speed = v, 0, 720);
             p.Slider("Level", () => level, v => level = v, 1, 10);
             p.Field("Gold", () => gold, v => gold = v);
+            p.Field("Score", () => score, v => score = Mathf.Max(0, v)); // rejects negatives
             p.Field("Jump", () => jumpHeight, v => jumpHeight = v);
             p.Field("Name", () => playerName, v => playerName = v);
             p.Field("God mode", () => godMode, v => godMode = v);
@@ -63,6 +65,7 @@ public class DemoPlayer : MonoBehaviour
         {
             nextDrain = Time.time + 1f;
             hp = Mathf.Max(0, hp - 1);
+            score += 10;
         }
     }
 }

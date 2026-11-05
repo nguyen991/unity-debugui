@@ -22,6 +22,7 @@ namespace Ng.DebugUI
         T last;
         bool hasValue;
         bool logged;
+        bool getterFailed;
 
         public ValueBinding(VisualElement element, Func<T> getter, Action<T> setter, Action<T> applyToUI)
         {
@@ -48,17 +49,33 @@ namespace Ng.DebugUI
             }
             catch (Exception e)
             {
+                getterFailed = true;
                 MarkError(e);
                 return;
             }
 
-            ClearError();
+            if (getterFailed)
+            {
+                // Recovered: push the value again so the error state is re-evaluated.
+                getterFailed = false;
+                hasValue = false;
+            }
+
             if (hasValue && Comparer.Equals(last, value))
                 return;
 
             last = value;
             hasValue = true;
-            applyToUI(value);
+            try
+            {
+                applyToUI(value);
+                ClearError();
+            }
+            catch (Exception e)
+            {
+                // e.g. a ToString() that throws: keep it to this control.
+                MarkError(e);
+            }
         }
 
         public void Invalidate() => hasValue = false;
@@ -76,6 +93,9 @@ namespace Ng.DebugUI
             {
                 MarkError(e);
             }
+            // The setter may reject or clamp the input: re-read the game value on the next
+            // refresh (once the user stops editing) so the UI never shows a value the game lacks.
+            Invalidate();
         }
 
         public void MarkError(Exception e)

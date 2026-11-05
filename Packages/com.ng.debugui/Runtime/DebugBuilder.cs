@@ -116,10 +116,32 @@ namespace Ng.DebugUI
             }
 
             field.RegisterValueChangedCallback(e => binding.Write(e.newValue));
-            field.RegisterCallback<FocusInEvent>(_ => binding.IsEditing = true, TrickleDown.TrickleDown);
-            field.RegisterCallback<FocusOutEvent>(_ => binding.IsEditing = false, TrickleDown.TrickleDown);
-            field.RegisterCallback<PointerCaptureEvent>(_ => binding.IsEditing = true, TrickleDown.TrickleDown);
-            field.RegisterCallback<PointerCaptureOutEvent>(_ => binding.IsEditing = false, TrickleDown.TrickleDown);
+
+            // "Editing" = a text input inside this control has focus (typing), or the control holds
+            // pointer capture (dragging). Tracked separately: text selection captures and releases
+            // the pointer while the field keeps focus, and a slider keeps focus after a drag even
+            // though the user is no longer changing it.
+            bool typing = false, dragging = false;
+            void Update() => binding.IsEditing = typing || dragging;
+            field.RegisterCallback<FocusInEvent>(e => { typing = IsInTextInput(e.target as VisualElement, field); Update(); }, TrickleDown.TrickleDown);
+            field.RegisterCallback<FocusOutEvent>(_ => { typing = false; Update(); }, TrickleDown.TrickleDown);
+            field.RegisterCallback<PointerCaptureEvent>(_ => { dragging = true; Update(); }, TrickleDown.TrickleDown);
+            field.RegisterCallback<PointerCaptureOutEvent>(_ => { dragging = false; Update(); }, TrickleDown.TrickleDown);
+        }
+
+        const string TextInputClass = "unity-base-text-field"; // TextInputBaseField<T>.ussClassName
+
+        /// <summary>True if <paramref name="target"/> is, or is inside, a text input within <paramref name="field"/>.</summary>
+        static bool IsInTextInput(VisualElement target, VisualElement field)
+        {
+            for (var e = target; e != null; e = e.parent)
+            {
+                if (e.ClassListContains(TextInputClass))
+                    return true;
+                if (e == field)
+                    break;
+            }
+            return false;
         }
     }
 }

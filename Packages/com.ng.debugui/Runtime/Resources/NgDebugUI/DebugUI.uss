@@ -192,3 +192,19 @@
 .ngdbg-root Label.ngdbg-error {
     color: rgb(255, 90, 90);
 }
+
+/* ---------- Phone width: stack slider label above its track so the track stays draggable ---------- */
+
+.ngdbg-narrow .ngdbg-slider {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.ngdbg-narrow .ngdbg-slider > .unity-base-field__label {
+    min-width: 0;
+    margin-bottom: 2px;
+}
+
+.ngdbg-narrow .unity-base-field__label {
+    min-width: 90px;
+}

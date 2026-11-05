@@ -21,10 +21,26 @@ namespace Ng.DebugUI
     /// UNITY_EDITOR, DEVELOPMENT_BUILD or DEBUG_UI_ENABLED is defined. Define DEBUG_UI_DISABLED to
     /// turn the library into a no-op everywhere.
     /// </summary>
+    // UAC0009: Unity 6.6 deprecates DEVELOPMENT_BUILD in favour of managed-code-variant defines that
+    // do not exist on 6000.0–6.5. DEVELOPMENT_BUILD is still the one define that marks a development
+    // player on every supported version, so it is kept on purpose.
+#pragma warning disable UAC0009
     public static class DebugUI
     {
         /// <summary>Test hook: behaves as if DEBUG_UI_DISABLED were defined.</summary>
         internal static bool ForceDisabled;
+
+        /// <summary>
+        /// Whether this build may show the debug UI at all. False in release builds unless
+        /// DEBUG_UI_ENABLED is defined, so Open()/Toggle() can never create UI for players.
+        /// Settable only so tests can simulate a release build.
+        /// </summary>
+        internal static bool BuildAllowsDebugUI =
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || DEBUG_UI_ENABLED
+            true;
+#else
+            false;
+#endif
 
         static bool Enabled
         {
@@ -33,7 +49,7 @@ namespace Ng.DebugUI
 #if DEBUG_UI_DISABLED
                 return false;
 #else
-                return !ForceDisabled && Application.isPlaying;
+                return BuildAllowsDebugUI && !ForceDisabled && Application.isPlaying;
 #endif
             }
         }
@@ -119,4 +135,5 @@ namespace Ng.DebugUI
                 DebugUIHost.GetOrCreate().Toggle();
         }
     }
+#pragma warning restore UAC0009
 }
