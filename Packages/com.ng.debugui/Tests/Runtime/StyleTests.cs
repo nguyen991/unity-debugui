@@ -19,9 +19,9 @@ namespace Ng.DebugTools.Tests
         // ---------- Scale ----------
 
         [Test]
-        public void Scale_DefaultIsOne()
+        public void Scale_DefaultIsTwo()
         {
-            Assert.That(DebugUI.Scale, Is.EqualTo(1f));
+            Assert.That(DebugUI.Scale, Is.EqualTo(2f));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Ng.DebugTools.Tests
             DebugUI.Scale = 10f;
             Assert.That(DebugUI.Scale, Is.EqualTo(3f));
             DebugUI.Scale = float.NaN;
-            Assert.That(DebugUI.Scale, Is.EqualTo(1f));
+            Assert.That(DebugUI.Scale, Is.EqualTo(2f));
         }
 
         [Test]
@@ -48,6 +48,7 @@ namespace Ng.DebugTools.Tests
         [UnityTest]
         public IEnumerator Scale_Two_MakesEverythingTwiceAsBigOnScreen()
         {
+            DebugUI.Scale = 1f;
             DebugUI.Panel(null, "A", p => { });
             DebugUI.Open();
             yield return null;

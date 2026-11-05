@@ -174,14 +174,14 @@ namespace Ng.DebugTools
 
         /// <summary>
         /// Scales the whole debug UI — text, controls and touch targets together — on top of the
-        /// automatic DPI scaling. 1 = default, 1.5 = 50% bigger. Clamped to [0.5, 3].
+        /// automatic DPI scaling. Default 2; 1 = the theme's base size. Clamped to [0.5, 3].
         /// </summary>
         public static float Scale
         {
             get => scale;
             set
             {
-                scale = float.IsNaN(value) ? 1f : Mathf.Clamp(value, MinScale, MaxScale);
+                scale = float.IsNaN(value) ? DefaultScale : Mathf.Clamp(value, MinScale, MaxScale);
                 var host = DebugUIHost.Instance;
                 if (host != null)
                     host.SetScale(scale);
@@ -271,8 +271,8 @@ namespace Ng.DebugTools
         internal const float DefaultButtonSize = 48f, MinButtonSize = 24f, MaxButtonSize = 200f;
         static float buttonSize = DefaultButtonSize;
 
-        internal const float MinScale = 0.5f, MaxScale = 3f;
-        static float scale = 1f;
+        internal const float DefaultScale = 2f, MinScale = 0.5f, MaxScale = 3f;
+        static float scale = DefaultScale;
 
         /// <summary>
         /// Adds a USS stylesheet on top of the built-in theme, e.g. to change fonts or colors.
@@ -302,7 +302,7 @@ namespace Ng.DebugTools
         internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
 
         /// <summary>
-        /// Back to defaults: full size, scale 1, default sorting order, button bottom-right and 48px, no extra stylesheets, backquote shortcut. Also runs on entering play
+        /// Back to defaults: full size, scale 2, default sorting order, button bottom-right and 48px, no extra stylesheets, backquote shortcut. Also runs on entering play
         /// mode so Enter Play Mode Options with domain reload disabled starts clean.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -315,7 +315,7 @@ namespace Ng.DebugTools
             styleSheets.Clear();
             width = height = 1f;
             ApplySize();
-            Scale = 1f;
+            Scale = DefaultScale;
             SortingOrder = DefaultSortingOrder;
             ButtonPosition = DebugButtonPosition.BottomRight;
             ButtonSize = DefaultButtonSize;
