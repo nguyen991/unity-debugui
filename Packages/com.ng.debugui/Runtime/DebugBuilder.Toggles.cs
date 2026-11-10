@@ -22,17 +22,21 @@ namespace Ng.DebugTools
         {
             var toggles = CreateToggleGroup(label, options, multiple: true, allowNone, buttonWidth);
             int count = options.Length;
+            // What is on screen. The user's change is the difference from it, not from the game's
+            // current values: those may have changed during the press (refresh is paused while
+            // pressing), and options the user didn't touch must keep the game's value.
+            var shown = new ToggleButtonGroupState(0, count);
             return AddField(toggles, UssClasses.Toggles,
                 () => ToggleStates.FromBools(isOn, count),
                 set == null ? null : s =>
                 {
-                    // Compare with the game's current values, so only the options the user changed
-                    // reach the setter.
+                    var before = shown;
+                    shown = s;
                     for (int i = 0; i < count; i++)
-                        if (isOn(i) != s[i])
+                        if (before[i] != s[i])
                             set(i, s[i]);
                 },
-                null);
+                v => shown = v);
         }
 
         public IDebugBuilder Toggles<TEnum>(string label, Func<TEnum> get, Action<TEnum> set = null,
@@ -40,10 +44,16 @@ namespace Ng.DebugTools
         {
             var options = ToggleStates.EnumOptions<TEnum>.Get();
             var toggles = CreateToggleGroup(label, options.Names, options.IsFlags, options.IsFlags && allowNone, buttonWidth);
+            var shown = new ToggleButtonGroupState(0, options.Names.Length); // see the bool overload
             return AddField(toggles, UssClasses.Toggles,
                 () => options.ToState(get()),
-                set == null ? null : s => set(options.ToEnum(s, get())),
-                null);
+                set == null ? null : s =>
+                {
+                    var before = shown;
+                    shown = s;
+                    set(options.ApplyChanges(before, s, get()));
+                },
+                v => shown = v);
         }
 
         /// <summary>

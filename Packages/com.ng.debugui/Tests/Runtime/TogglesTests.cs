@@ -166,6 +166,17 @@ namespace Ng.DebugTools.Tests
         }
 
         [Test]
+        public void Toggles_Multi_TapOnStaleDisplay_KeepsGameChangeOfOtherOptions()
+        {
+            var show = new[] { true, false, false };
+            b.Toggles("Show", Shows, i => show[i], (i, on) => show[i] = on);
+            group.Refresh();               // shows 100
+            show[0] = false;               // the game turns FPS off during the press (no refresh yet)
+            Group.value = State("110");    // the user taps Grid on the stale display
+            Assert.That(show, Is.EqualTo(new[] { false, true, false }));
+        }
+
+        [Test]
         public void Toggles_Multi_NoAllowNone_LastCannotBeCleared()
         {
             var show = new[] { false, true, false };
@@ -234,6 +245,17 @@ namespace Ng.DebugTools.Tests
             group.Refresh();
             Group.value = State("010");
             Assert.That(cheats, Is.EqualTo((Cheats)(8 | 2)));
+        }
+
+        [Test]
+        public void Toggles_Flags_TapOnStaleDisplay_KeepsGameChangeOfOtherBits()
+        {
+            var cheats = Cheats.God;
+            b.Toggles("Cheats", () => cheats, v => cheats = v);
+            group.Refresh();               // shows 100
+            cheats = Cheats.None;          // the game clears God during the press
+            Group.value = State("101");    // the user taps Fly on the stale display
+            Assert.That(cheats, Is.EqualTo(Cheats.Fly));
         }
 
         [Test]

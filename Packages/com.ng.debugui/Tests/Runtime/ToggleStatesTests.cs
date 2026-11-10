@@ -111,6 +111,31 @@ namespace Ng.DebugTools.Tests
         }
 
         [Test]
+        public void Flags_SignedTopBit_HasButton()
+        {
+            var o = ToggleStates.EnumOptions<IntTop>.Get();
+            Assert.That(o.Names, Is.EqualTo(new[] { "A", "Top" }));
+            Assert.That(Bits(o.ToState(IntTop.Top)), Is.EqualTo("01"));
+            Assert.That(o.ToEnum(State("11"), 0), Is.EqualTo(IntTop.A | IntTop.Top));
+        }
+
+        [Test]
+        public void Flags_ULongBit63_LastAndRoundTrips()
+        {
+            var o = ToggleStates.EnumOptions<ULongTop>.Get();
+            Assert.That(o.Names, Is.EqualTo(new[] { "A", "Top" }));
+            Assert.That(o.ToEnum(State("01"), 0), Is.EqualTo(ULongTop.Top));
+        }
+
+        [Test]
+        public void Plain_UnsignedHugeValue_SortsLast()
+        {
+            var o = ToggleStates.EnumOptions<UBig>.Get();
+            Assert.That(o.Names, Is.EqualTo(new[] { "Small", "Huge" }));
+            Assert.That(o.ToEnum(State("01"), UBig.Small), Is.EqualTo(UBig.Huge));
+        }
+
+        [Test]
         public void EnumOptions_MoreThan64_Throws()
         {
             Assert.Throws<ArgumentException>(() => ToggleStates.EnumOptions<Big>.Get());

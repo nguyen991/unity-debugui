@@ -72,13 +72,21 @@ namespace Ng.DebugTools
                 foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
                 {
                     long value = ToLong((TEnum)field.GetValue(null));
-                    if (IsFlags && (value == 0 || (value & (value - 1)) != 0))
-                        continue; // not a single bit
+                    if (IsFlags)
+                    {
+                        ulong bit = ToBits(value);
+                        if (bit == 0 || (bit & (bit - 1)) != 0)
+                            continue; // not a single bit
+                    }
                     if (seen.Add(value))
                         entries.Add((field.Name, value));
                 }
-                // Flags: by bit (all positive after ToLong). Plain: by signed value, so Low = -1 comes first.
-                entries.Sort((a, b) => a.value.CompareTo(b.value));
+                // Flags: by bit. Plain: by value as the enum's own type sees it — signed (Low = -1
+                // first) or unsigned (ulong.MaxValue last).
+                if (IsFlags || !Signed)
+                    entries.Sort((a, b) => ToBits(a.value).CompareTo(ToBits(b.value)));
+                else
+                    entries.Sort((a, b) => a.value.CompareTo(b.value));
 
                 if (entries.Count > MaxOptions)
                     throw new ArgumentException(
@@ -91,7 +99,7 @@ namespace Ng.DebugTools
                 {
                     Names[i] = entries[i].name;
                     values[i] = FromLong(entries[i].value);
-                    bits[i] = unchecked((ulong)entries[i].value);
+                    bits[i] = ToBits(entries[i].value);
                     buttonMask |= bits[i];
                 }
             }
@@ -101,7 +109,7 @@ namespace Ng.DebugTools
                 var state = new ToggleButtonGroupState(0, Names.Length);
                 if (IsFlags)
                 {
-                    ulong v = unchecked((ulong)ToLong(value));
+                    ulong v = ToBits(ToLong(value));
                     for (int i = 0; i < bits.Length; i++)
                         state[i] = (v & bits[i]) != 0;
                 }
@@ -131,10 +139,27 @@ namespace Ng.DebugTools
                     return index >= 0 && index < values.Length ? values[index] : current;
                 }
 
-                ulong result = unchecked((ulong)ToLong(current)) & ~buttonMask;
+                ulong result = ToBits(ToLong(current)) & ~buttonMask;
                 for (int i = 0; i < bits.Length && i < state.length; i++)
                     if (state[i])
                         result |= bits[i];
+                return FromLong(unchecked((long)result));
+            }
+
+            /// <summary>
+            /// <paramref name="current"/> with the user's change from <paramref name="before"/> to
+            /// <paramref name="after"/> applied. Flags: only the bits of buttons that changed are
+            /// set or cleared, so bits the game changed meanwhile are kept. Plain: as <see cref="ToEnum"/>.
+            /// </summary>
+            public TEnum ApplyChanges(ToggleButtonGroupState before, ToggleButtonGroupState after, TEnum current)
+            {
+                if (!IsFlags)
+                    return ToEnum(after, current);
+
+                ulong result = ToBits(ToLong(current));
+                for (int i = 0; i < bits.Length && i < after.length && i < before.length; i++)
+                    if (before[i] != after[i])
+                        result = after[i] ? result | bits[i] : result & ~bits[i];
                 return FromLong(unchecked((long)result));
             }
 
@@ -142,6 +167,10 @@ namespace Ng.DebugTools
             // Signed underlying types are sign-extended, unsigned ones zero-extended.
             static readonly int Size = UnsafeUtility.SizeOf<TEnum>();
             static readonly bool Signed = IsSigned(Enum.GetUnderlyingType(typeof(TEnum)));
+
+            /// <summary>The value's bits within the enum's own width (no sign extension beyond it).</summary>
+            static ulong ToBits(long value)
+                => Size >= 8 ? unchecked((ulong)value) : unchecked((ulong)value) & ((1UL << (Size * 8)) - 1);
 
             static bool IsSigned(Type t) => t == typeof(sbyte) || t == typeof(short) || t == typeof(int) || t == typeof(long);
 
