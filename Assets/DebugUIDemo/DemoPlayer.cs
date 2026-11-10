@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Ng.DebugTools;
 using UnityEngine;
@@ -8,6 +9,11 @@ using UnityEngine;
 /// </summary>
 public class DemoPlayer : MonoBehaviour
 {
+    public enum Weapon { Sword, Bow, Staff }
+
+    [Flags]
+    public enum Cheats { None = 0, InfiniteAmmo = 1, NoClip = 2, OneHitKill = 4 }
+
     public int hp = 100;
     public int maxHp = 100;
     public float speed = 90f;          // degrees per second
@@ -18,6 +24,9 @@ public class DemoPlayer : MonoBehaviour
     public string playerName = "Hero";
     public bool godMode;
     public List<string> inventory = new List<string> { "Sword", "Shield" };
+    public Weapon weapon;
+    public Cheats cheats;
+    public bool[] overlays = new bool[3];
     int potions;
 
     float nextDrain;
@@ -31,7 +40,7 @@ public class DemoPlayer : MonoBehaviour
 
     void OnEnable()
     {
-        // `this` is the owner: the panel disappears automatically when this object is destroyed.        
+        // `this` is the owner: the panel disappears automatically when this object is destroyed.
         DebugUI.Panel(this, "Player", p => p
             .Label("Build 1.2.3")
             .Label("HP", () => hp)
@@ -43,6 +52,10 @@ public class DemoPlayer : MonoBehaviour
             .Field("Jump", () => jumpHeight, v => jumpHeight = v)
             .Field("Name", () => playerName, v => playerName = v)
             .Field("God mode", () => godMode, v => godMode = v)
+            .Toggles("Weapon", () => weapon, v => weapon = v)                       // enum: pick one
+            .Toggles("Cheats", () => cheats, v => cheats = v)                       // [Flags] enum: pick several
+            .Toggles("Overlay", new[] { "FPS", "Grid", "Hitbox" },
+                i => overlays[i], (i, on) => overlays[i] = on, buttonWidth: 80)     // per-index bool
             .Space(12)
             .Horizontal(h => h
                 .Button("Heal", () => hp = maxHp, new Color(0.2f, 0.6f, 0.3f))

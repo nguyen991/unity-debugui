@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
 Tap the round **DBG** button (bottom-right) to open it, or press **`** (backquote) when the Input System
 package is installed.
 
-- Labels, buttons, sliders, input fields, foldouts, horizontal/vertical layouts, lists that change at runtime
+- Labels, buttons, sliders, input fields, toggle buttons (pick one or several), foldouts, horizontal/vertical layouts, lists that change at runtime
 - Built-in log panel with filters, search and stack traces
 - Getters are only polled while the UI is open, and only for the visible panel
 - Themable with your own USS; `DebugUI.Scale` for bigger touch targets
@@ -69,6 +69,7 @@ The full guide is the [package README](Packages/com.ng.debugui/README.md):
 - [Usage](Packages/com.ng.debugui/README.md#usage) — panels, owners, removing panels
 - [Controls](Packages/com.ng.debugui/README.md#controls) — every builder method
 - [Lists that change at runtime](Packages/com.ng.debugui/README.md#lists-that-change-at-runtime-each) — `Each`
+- [Toggle buttons](Packages/com.ng.debugui/README.md#toggle-buttons-toggles) — `Toggles`: enum, `[Flags]`, index or bools
 - [Built-in log panel](Packages/com.ng.debugui/README.md#built-in-log-panel)
 - [How values stay in sync](Packages/com.ng.debugui/README.md#how-values-stay-in-sync)
 - [Opening the UI](Packages/com.ng.debugui/README.md#opening-the-ui) — DBG button, shortcut, window size

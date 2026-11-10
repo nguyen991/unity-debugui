@@ -91,6 +91,7 @@ DebugUI.Remove("Audio");
 | `Button(text, onClick, color)` | button | `color` is optional (e.g. `Color.red`); text turns dark/light to stay readable. Exceptions are caught and logged |
 | `Slider(label, get, set, min, max)` | slider + number box | `float` or `int` |
 | `Field(label, get, set)` | input box | `int`, `float`, `string`; `bool` shows a toggle. Setter runs on Enter / leaving the box |
+| `Toggles(label, get, set)` | row of toggle buttons | enum: pick one; `[Flags]` enum: pick several. Also `string[]` + `int` index or per-index `bool`; see [below](#toggle-buttons-toggles) |
 | `Vertical(b => …)`, `Horizontal(b => …)` | layout | children of a horizontal row share its width |
 | `Each(() => list, (item, b) => …)` | one entry per list item | rebuilt only when items are added/removed/replaced; see below |
 | `Line()` | thin separator | horizontal in a column, vertical inside `Horizontal` |
@@ -121,6 +122,39 @@ DebugUI.Panel(this, "Enemies", p => p
   foldouts, dropping focus). Use `Each` for content that grows and shrinks.
 - If the list changes while the tester is typing in a field *inside* that list, the typing is lost
   (that section is rebuilt).
+
+### Toggle buttons: `Toggles`
+
+A row of buttons, one per option; selected ones are highlighted. Buttons wrap to the next line when
+the row is full.
+
+```csharp
+enum Difficulty { Easy, Normal, Hard }
+[Flags] enum Cheats { None = 0, God = 1, InfiniteAmmo = 2, NoClip = 4 }
+
+p.Toggles("Difficulty", () => difficulty, v => difficulty = v);         // enum: pick one
+p.Toggles("Cheats", () => cheats, v => cheats = v);                     // [Flags] enum: pick several
+p.Toggles("Weapon", new[] { "Sword", "Bow", "Staff" },
+          () => weapon, v => weapon = v);                               // int index, -1 = none
+p.Toggles("Show", new[] { "FPS", "Grid", "Hitbox" },
+          i => show[i], (i, on) => show[i] = on, buttonWidth: 80);      // one bool per option
+```
+
+- **`allowNone`** — whether every button can be off. Defaults: `false` for the `int` index overload
+  (tapping the selected button does nothing; with `true` it clears the selection and the setter gets
+  `-1`), `true` for `[Flags]` enums and the per-index `bool` overload (with `false` the last selected
+  button can't be turned off). A plain enum has no "nothing" value, so it always has one selected.
+- **`[Flags]` enums** — one button per single-bit value; `None = 0` and combined values such as
+  `All = A | B` get no button. Bits of the game's value that have no button are kept when the user
+  changes the selection.
+- **Plain enums** — one button per distinct value (aliases show the first name), ordered by value.
+  A value matching no button shows nothing selected.
+- **Index overload** — a getter value out of range (or `-1`) shows nothing selected.
+- **Per-index `bool` overload** — the setter is called only for the options the user changed.
+- **`buttonWidth`** — `0` (default) fits each button to its text; `> 0` gives every button that width
+  in panel px (scaled by `DebugUI.Scale`).
+- At most **64** options (a UI Toolkit limit); more, or `null` options, shows "Build failed: …".
+- Leave the setter out to show the selection read-only.
 
 ### Built-in log panel
 
@@ -270,6 +304,7 @@ Your rules win over the built-in ones with the same selector. If a built-in rule
 | `ngdbg-button--colored` | a `Button` given a color (hover/press feedback via `opacity`) |
 | `ngdbg-slider` | `Slider` |
 | `ngdbg-field` | `Field` (all types) |
+| `ngdbg-toggles` | `Toggles` (its buttons have Unity's `unity-button-group__button` class; selected ones the `:checked` state) |
 | `ngdbg-vertical`, `ngdbg-horizontal`, `ngdbg-foldout` | layouts |
 | `ngdbg-each` | the container of an `Each` section |
 | `ngdbg-line`, `ngdbg-space` | `Line()`, `Space()` (e.g. `.ngdbg-line { background-color: …; }`) |
