@@ -82,5 +82,15 @@ namespace Ng.DebugTools
         /// </summary>
         IDebugBuilder Toggles(string label, string[] options, Func<int, bool> isOn, Action<int, bool> set = null,
                               bool allowNone = true, float buttonWidth = 0);
+
+        /// <summary>
+        /// A row of toggle buttons, one per enum value. A plain enum picks one value and can't be
+        /// empty (<paramref name="allowNone"/> is ignored). A <c>[Flags]</c> enum picks several: one
+        /// button per single-bit value (0 and combined values like <c>All</c> get none), and bits of
+        /// the game's value that have no button are kept. Wrapping, <paramref name="buttonWidth"/>
+        /// and the 64-option limit as in the index overload.
+        /// </summary>
+        IDebugBuilder Toggles<TEnum>(string label, Func<TEnum> get, Action<TEnum> set = null,
+                                     bool allowNone = true, float buttonWidth = 0) where TEnum : struct, Enum;
     }
 }

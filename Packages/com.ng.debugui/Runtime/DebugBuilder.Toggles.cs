@@ -35,6 +35,17 @@ namespace Ng.DebugTools
                 null);
         }
 
+        public IDebugBuilder Toggles<TEnum>(string label, Func<TEnum> get, Action<TEnum> set = null,
+                                            bool allowNone = true, float buttonWidth = 0) where TEnum : struct, Enum
+        {
+            var options = ToggleStates.EnumOptions<TEnum>.Get();
+            var toggles = CreateToggleGroup(label, options.Names, options.IsFlags, options.IsFlags && allowNone, buttonWidth);
+            return AddField(toggles, UssClasses.Toggles,
+                () => options.ToState(get()),
+                set == null ? null : s => set(options.ToEnum(s, get())),
+                null);
+        }
+
         /// <summary>
         /// A <see cref="ToggleButtonGroup"/> with one button per name. Validates before anything is
         /// added to the panel, so a bad call leaves only the "Build failed" line.

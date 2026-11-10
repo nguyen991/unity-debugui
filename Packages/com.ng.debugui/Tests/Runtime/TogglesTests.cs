@@ -175,6 +175,75 @@ namespace Ng.DebugTools.Tests
             Assert.That(show[1], Is.True);
         }
 
+        // ---------- Enums ----------
+
+        [Test]
+        public void Toggles_Enum_Plain_SingleSelect_NeverEmpty()
+        {
+            var difficulty = Difficulty.Normal;
+            b.Toggles("Difficulty", () => difficulty, v => difficulty = v, allowNone: true);
+            Assert.That(Buttons.Select(x => x.text), Is.EqualTo(new[] { "Easy", "Normal", "Hard" }));
+            Assert.That(Group.isMultipleSelection, Is.False);
+            Assert.That(Group.allowEmptySelection, Is.False);
+        }
+
+        [Test]
+        public void Toggles_Enum_Plain_UserChange()
+        {
+            var difficulty = Difficulty.Easy;
+            b.Toggles("Difficulty", () => difficulty, v => difficulty = v);
+            group.Refresh();
+            Group.value = State("001");
+            Assert.That(difficulty, Is.EqualTo(Difficulty.Hard));
+        }
+
+        [Test]
+        public void Toggles_Flags_MultiSelect()
+        {
+            var cheats = Cheats.None;
+            b.Toggles("Cheats", () => cheats, v => cheats = v);
+            Assert.That(Buttons.Select(x => x.text), Is.EqualTo(new[] { "God", "Ammo", "Fly" }));
+            Assert.That(Group.isMultipleSelection, Is.True);
+            Assert.That(Group.allowEmptySelection, Is.True);
+        }
+
+        [Test]
+        public void Toggles_Flags_AllowNoneFalse()
+        {
+            var cheats = Cheats.God;
+            b.Toggles("Cheats", () => cheats, v => cheats = v, allowNone: false);
+            Assert.That(Group.allowEmptySelection, Is.False);
+        }
+
+        [Test]
+        public void Toggles_Flags_FollowsGameValue()
+        {
+            var cheats = Cheats.God;
+            b.Toggles("Cheats", () => cheats, v => cheats = v);
+            group.Refresh();
+            cheats = Cheats.God | Cheats.Fly;
+            group.Refresh();
+            Assert.That(Bits(Group.value), Is.EqualTo("101"));
+        }
+
+        [Test]
+        public void Toggles_Flags_UserChange_KeepsUnknownBits()
+        {
+            var cheats = (Cheats)(8 | 1);
+            b.Toggles("Cheats", () => cheats, v => cheats = v);
+            group.Refresh();
+            Group.value = State("010");
+            Assert.That(cheats, Is.EqualTo((Cheats)(8 | 2)));
+        }
+
+        [Test]
+        public void Toggles_Enum_TooManyValues_Throws()
+        {
+            var big = Big.V0;
+            Assert.Throws<ArgumentException>(() => b.Toggles("Big", () => big, v => big = v));
+            Assert.That(root.childCount, Is.EqualTo(0));
+        }
+
         // ---------- Common ----------
 
         [Test]
