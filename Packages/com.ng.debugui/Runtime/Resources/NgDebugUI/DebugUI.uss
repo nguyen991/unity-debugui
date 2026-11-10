@@ -172,9 +172,25 @@
     flex-grow: 1;
 }
 
-.ngdbg-toggles .unity-button-group > Button {
+/* .ngdbg-root + Unity's button-group classes: more specific than the default theme's rules. */
+.ngdbg-root .ngdbg-toggles Button.unity-button-group__button {
     min-height: 28px;
     margin: 1px;
+    padding: 0 10px;
+    border-width: 0;
+    border-radius: 4px;
+    background-color: rgb(58, 58, 70);
+    color: rgb(235, 235, 240);
+}
+
+.ngdbg-root .ngdbg-toggles Button.unity-button-group__button:hover {
+    background-color: rgb(72, 72, 88);
+}
+
+/* Selected: the same accent as the selected tab. */
+.ngdbg-root .ngdbg-toggles Button.unity-button-group__button:checked {
+    background-color: rgb(70, 110, 200);
+    color: rgb(255, 255, 255);
 }
 
 .ngdbg-root .unity-base-field__label {

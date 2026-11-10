@@ -290,6 +290,26 @@ namespace Ng.DebugTools.Tests
         }
 
         [UnityTest]
+        public IEnumerator Toggles_Theme_ButtonsMatchTheDebugTheme()
+        {
+            int weapon = 1;
+            DebugUI.Panel(null, "A", p => p.Toggles("Weapon", Weapons, () => weapon, v => weapon = v));
+            DebugUI.Open();
+            yield return null;
+            yield return null;
+
+            var buttons = TestUtil.Window.Content.Q<ToggleButtonGroup>().Query<Button>().ToList();
+            var off = buttons[0].resolvedStyle;
+            var on = buttons[1].resolvedStyle;
+            // Off: the theme's button colors (dark background, light text), like Button().
+            Assert.That(off.backgroundColor, Is.EqualTo((Color)new Color32(58, 58, 70, 255)));
+            Assert.That(off.color, Is.EqualTo((Color)new Color32(235, 235, 240, 255)));
+            // On: the selected-tab accent with white text.
+            Assert.That(on.backgroundColor, Is.EqualTo((Color)new Color32(70, 110, 200, 255)));
+            Assert.That(on.color, Is.EqualTo(Color.white));
+        }
+
+        [UnityTest]
         public IEnumerator Toggles_ButtonsWrap()
         {
             DebugUI.Scale = 2f;
