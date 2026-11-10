@@ -62,5 +62,25 @@ namespace Ng.DebugTools
 
         /// <summary>Shown as a toggle.</summary>
         IDebugBuilder Field(string label, Func<bool> get, Action<bool> set = null);
+
+        /// <summary>
+        /// A row of toggle buttons, one per option, that picks one option by index.
+        /// <paramref name="get"/> returns the selected index; -1 (or any index out of range) shows
+        /// nothing selected. With <paramref name="allowNone"/>, tapping the selected button clears
+        /// the selection and the setter gets -1. Buttons wrap to the next line when the row is full;
+        /// <paramref name="buttonWidth"/> &gt; 0 gives every button that width, 0 fits each to its text.
+        /// At most 64 options.
+        /// </summary>
+        IDebugBuilder Toggles(string label, string[] options, Func<int> get, Action<int> set = null,
+                              bool allowNone = false, float buttonWidth = 0);
+
+        /// <summary>
+        /// A row of toggle buttons where several can be on: <paramref name="isOn"/> reads option i,
+        /// <paramref name="set"/> is called only for the options the user changed. Without
+        /// <paramref name="allowNone"/> the last selected button can't be turned off.
+        /// Wrapping, <paramref name="buttonWidth"/> and the 64-option limit as in the index overload.
+        /// </summary>
+        IDebugBuilder Toggles(string label, string[] options, Func<int, bool> isOn, Action<int, bool> set = null,
+                              bool allowNone = true, float buttonWidth = 0);
     }
 }

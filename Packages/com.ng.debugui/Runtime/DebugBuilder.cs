@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 namespace Ng.DebugTools
 {
     /// <summary>Builds UI Toolkit elements into a container and registers their bindings in a group.</summary>
-    internal sealed class DebugBuilder : IDebugBuilder
+    internal sealed partial class DebugBuilder : IDebugBuilder
     {
         readonly VisualElement container;
         readonly BindingGroup group;

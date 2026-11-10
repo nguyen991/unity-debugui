@@ -14,6 +14,7 @@ namespace Ng.DebugTools
         public const string ButtonColored = "ngdbg-button--colored";
         public const string Slider = "ngdbg-slider";
         public const string Field = "ngdbg-field";
+        public const string Toggles = "ngdbg-toggles";
 
         // Layouts
         public const string Vertical = "ngdbg-vertical";
