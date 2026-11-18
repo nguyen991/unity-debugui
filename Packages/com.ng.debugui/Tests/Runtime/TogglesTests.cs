@@ -334,7 +334,6 @@ namespace Ng.DebugTools.Tests
         [UnityTest]
         public IEnumerator Toggles_ButtonsWrap()
         {
-            DebugUI.Scale = 2f;
             var options = Enumerable.Range(1, 20).Select(i => "Option " + i).ToArray();
             int pick = 0;
             DebugUI.Panel(null, "A", p => p.Toggles("Pick", options, () => pick, v => pick = v));

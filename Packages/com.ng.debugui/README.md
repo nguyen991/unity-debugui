@@ -152,7 +152,7 @@ p.Toggles("Show", new[] { "FPS", "Grid", "Hitbox" },
 - **Index overload** — a getter value out of range (or `-1`) shows nothing selected.
 - **Per-index `bool` overload** — the setter is called only for the options the user changed.
 - **`buttonWidth`** — `0` (default) fits each button to its text; `> 0` gives every button that width
-  in panel px (scaled by `DebugUI.Scale`).
+  in panel px (scaled with the rest of the UI by `DebugUI.ReferenceResolution`).
 - At most **64** options (a UI Toolkit limit); more, or `null` options, shows "Build failed: …".
 - Leave the setter out to show the selection read-only.
 
@@ -251,22 +251,30 @@ if (Pointer.current.press.wasPressedThisFrame && !DebugUI.IsPointerOverUI)
 - **`Each` inside `Horizontal`** — the items are laid out side by side and share the row's width.
 - **Several log panels** — every `LogPanel` call shares one log buffer; the `capacity` of the latest call
   applies.
-- **Settings reset** — `Width`, `Height`, `Scale`, `SortingOrder`, `ButtonPosition`, `ButtonSize`, `ToggleKey` and added style sheets go back to their defaults when the
+- **Settings reset** — `Width`, `Height`, `ReferenceResolution`, `MatchWidthOrHeight`, `SortingOrder`, `ButtonPosition`, `ButtonSize`, `ToggleKey` and added style sheets go back to their defaults when the
   app starts or Play Mode is entered (also with *Enter Play Mode Options* / no domain reload), so set them
   from startup code.
 
 ## Styling
 
-### Size of everything: `DebugUI.Scale`
+### Size of everything: `DebugUI.ReferenceResolution`
+
+The debug UI scales with the screen size, like a uGUI *Canvas Scaler* set to *Scale With Screen Size*,
+so it takes the same share of the screen on every device whatever its DPI.
 
 ```csharp
-DebugUI.Scale = 2.5f;   // text, controls and touch targets bigger (range 0.5 – 3, default 2)
-DebugUI.Scale = 1f;     // the theme's base size: smaller, fits more on screen
+DebugUI.ReferenceResolution = new Vector2Int(540, 960); // default
+DebugUI.MatchWidthOrHeight = 0.5f;                      // 0 = fit width, 1 = fit height (default 0.5)
+
+DebugUI.ReferenceResolution = new Vector2Int(360, 640);   // everything 1.5× bigger
+DebugUI.ReferenceResolution = new Vector2Int(1080, 1920); // everything half the size, fits more
 ```
 
-The UI already scales with the screen's DPI, so a control has about the same physical size on a
-phone and a monitor; `Scale` multiplies that. Prefer it over a bigger `font-size` alone, which can
-overflow the 32px-high controls.
+On a screen of exactly `ReferenceResolution` one panel px is one screen pixel; on any other screen the
+UI is scaled so the matched side stays the same. A smaller reference means bigger text, controls and touch
+targets. Match `0` keeps the width the same on every portrait phone; `1` keeps the height (use it with a
+landscape reference such as `960×540`); `0.5` (default) also keeps the size when the device rotates. Prefer
+this over a bigger `font-size` alone, which can overflow the 32px-high controls.
 
 ### Fonts, colors, spacing: your own USS
 
@@ -324,7 +332,7 @@ Inside controls you can also target UI Toolkit's own classes, e.g. `.ngdbg-slide
 | Any build with scripting define `DEBUG_UI_DISABLED` | off everywhere (calls compile but do nothing) |
 
 The other members — `Open()`, `Close()`, `Toggle()`, `IsOpen`, `IsPointerOverUI`, `Width`, `Height`,
-`Scale`, `SortingOrder`, `ButtonPosition`, `ButtonSize`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
+`ReferenceResolution`, `MatchWidthOrHeight`, `SortingOrder`, `ButtonPosition`, `ButtonSize`, `ToggleKey` (with the Input System), `AddStyleSheet()`, `RemoveStyleSheet()` — always compile. When the debug UI is off they never
 create any UI: `Open()` / `Close()` / `Toggle()` do nothing, `IsOpen` and `IsPointerOverUI` return `false`,
 and the settings are only stored.
 

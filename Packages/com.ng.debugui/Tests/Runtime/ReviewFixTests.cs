@@ -159,12 +159,11 @@ namespace Ng.DebugTools.Tests
             return line;
         }
 
-        // Phone width + big Scale (as reported): the slider's number box must stay inside the
+        // Phone width (as reported): the slider's number box must stay inside the
         // slider row, not overflow onto the next control.
         [UnityTest]
         public IEnumerator Narrow_SliderInputRow_DoesNotOverflowSlider()
         {
-            DebugUI.Scale = 2f;
             float a = 1, c = 1;
             DebugUI.Panel(null, "A", p =>
             {

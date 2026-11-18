@@ -16,49 +16,98 @@ namespace Ng.DebugTools.Tests
 
         static StyleSheet Override => Resources.Load<StyleSheet>("NgDebugUITests/Override");
 
-        // ---------- Scale ----------
+        // ---------- Reference resolution ----------
 
         [Test]
-        public void Scale_DefaultIsTwo()
+        public void Defaults_ScaleWithScreenSize540x960_Match05()
         {
-            Assert.That(DebugUI.Scale, Is.EqualTo(2f));
-        }
-
-        [Test]
-        public void Scale_IsClamped()
-        {
-            DebugUI.Scale = 0.1f;
-            Assert.That(DebugUI.Scale, Is.EqualTo(0.5f));
-            DebugUI.Scale = 10f;
-            Assert.That(DebugUI.Scale, Is.EqualTo(3f));
-            DebugUI.Scale = float.NaN;
-            Assert.That(DebugUI.Scale, Is.EqualTo(2f));
-        }
-
-        [Test]
-        public void Scale_AppliedToPanelSettings_BeforeAndAfterHost()
-        {
-            DebugUI.Scale = 1.5f;
+            Assert.That(DebugUI.ReferenceResolution, Is.EqualTo(new Vector2Int(540, 960)));
+            Assert.That(DebugUI.MatchWidthOrHeight, Is.EqualTo(0.5f));
             DebugUI.Panel(null, "A", p => { });
-            Assert.That(DebugUIHost.Instance.Document.panelSettings.scale, Is.EqualTo(1.5f));
-            DebugUI.Scale = 2f;
-            Assert.That(DebugUIHost.Instance.Document.panelSettings.scale, Is.EqualTo(2f));
+            var settings = DebugUIHost.Instance.Document.panelSettings;
+            Assert.That(settings.scaleMode, Is.EqualTo(PanelScaleMode.ScaleWithScreenSize));
+            Assert.That(settings.screenMatchMode, Is.EqualTo(PanelScreenMatchMode.MatchWidthOrHeight));
+            Assert.That(settings.scale, Is.EqualTo(1f));
         }
 
-        [UnityTest]
-        public IEnumerator Scale_Two_MakesEverythingTwiceAsBigOnScreen()
+        [Test]
+        public void ReferenceResolutionAndMatch_AreClamped()
         {
-            DebugUI.Scale = 1f;
+            DebugUI.ReferenceResolution = new Vector2Int(0, -5);
+            Assert.That(DebugUI.ReferenceResolution, Is.EqualTo(new Vector2Int(1, 1)));
+            DebugUI.MatchWidthOrHeight = -1f;
+            Assert.That(DebugUI.MatchWidthOrHeight, Is.EqualTo(0f));
+            DebugUI.MatchWidthOrHeight = 2f;
+            Assert.That(DebugUI.MatchWidthOrHeight, Is.EqualTo(1f));
+            DebugUI.MatchWidthOrHeight = float.NaN;
+            Assert.That(DebugUI.MatchWidthOrHeight, Is.EqualTo(0.5f));
+        }
+
+        [Test]
+        public void ReferenceResolutionAndMatch_AppliedToPanelSettings_BeforeAndAfterHost()
+        {
+            DebugUI.ReferenceResolution = new Vector2Int(1920, 1080);
+            DebugUI.MatchWidthOrHeight = 1f;
+            DebugUI.Panel(null, "A", p => { });
+            var settings = DebugUIHost.Instance.Document.panelSettings;
+            Assert.That(settings.referenceResolution, Is.EqualTo(new Vector2Int(1920, 1080)));
+            Assert.That(settings.match, Is.EqualTo(1f));
+
+            DebugUI.ReferenceResolution = new Vector2Int(800, 600);
+            DebugUI.MatchWidthOrHeight = 0f;
+            Assert.That(settings.referenceResolution, Is.EqualTo(new Vector2Int(800, 600)));
+            Assert.That(settings.match, Is.EqualTo(0f));
+        }
+
+        IEnumerator OpenAndLayout()
+        {
             DebugUI.Panel(null, "A", p => { });
             DebugUI.Open();
             yield return null;
             yield return null;
-            float widthAtOne = TestUtil.Window.Root.layout.width;
-            DebugUI.Scale = 2f;
+        }
+
+        [UnityTest]
+        public IEnumerator MatchWidth_PanelIsReferenceWidthWide()
+        {
+            DebugUI.ReferenceResolution = new Vector2Int(500, 1000);
+            DebugUI.MatchWidthOrHeight = 0f;
+            yield return OpenAndLayout();
+            // Whatever the screen size, the panel is the reference width wide.
+            Assert.That(TestUtil.Window.Root.layout.width, Is.EqualTo(500f).Within(2f));
+        }
+
+        [UnityTest]
+        public IEnumerator MatchHeight_PanelIsReferenceHeightHigh()
+        {
+            DebugUI.ReferenceResolution = new Vector2Int(1000, 800);
+            DebugUI.MatchWidthOrHeight = 1f;
+            yield return OpenAndLayout();
+            Assert.That(TestUtil.Window.Root.layout.height, Is.EqualTo(800f).Within(2f));
+        }
+
+        [UnityTest]
+        public IEnumerator ReferenceResolution_ChangeWhileOpen_AppliesImmediately()
+        {
+            DebugUI.MatchWidthOrHeight = 0f;
+            yield return OpenAndLayout();
+            DebugUI.ReferenceResolution = new Vector2Int(640, 640);
             yield return null;
             yield return null;
-            // Same screen, twice the scale → half as many panel units across.
-            Assert.That(TestUtil.Window.Root.layout.width, Is.EqualTo(widthAtOne / 2f).Within(2f));
+            Assert.That(TestUtil.Window.Root.layout.width, Is.EqualTo(640f).Within(2f));
+        }
+
+        [UnityTest]
+        public IEnumerator HalfTheReference_MakesEverythingTwiceAsBigOnScreen()
+        {
+            DebugUI.ReferenceResolution = new Vector2Int(1080, 1920);
+            yield return OpenAndLayout();
+            float widthAtFull = TestUtil.Window.Root.layout.width;
+            DebugUI.ReferenceResolution = new Vector2Int(540, 960);
+            yield return null;
+            yield return null;
+            // Same screen, half the reference → half as many panel units across.
+            Assert.That(TestUtil.Window.Root.layout.width, Is.EqualTo(widthAtFull / 2f).Within(2f));
         }
 
         // ---------- Style sheets ----------

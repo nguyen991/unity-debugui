@@ -173,19 +173,48 @@ namespace Ng.DebugTools
         }
 
         /// <summary>
-        /// Scales the whole debug UI — text, controls and touch targets together — on top of the
-        /// automatic DPI scaling. Default 2; 1 = the theme's base size. Clamped to [0.5, 3].
+        /// Size of the debug UI: the screen size, in pixels, at which one panel px is one screen pixel.
+        /// The UI keeps the same proportion of the screen on every device, whatever its DPI; on other
+        /// screens it is scaled by the side chosen with <see cref="MatchWidthOrHeight"/>. A smaller
+        /// reference makes everything bigger (text, controls, touch targets): 360×640 is about 1.5× the
+        /// default, 1080×1920 half of it. Default 540×960. Each side is at least 1.
+        /// Can be set before the UI exists.
         /// </summary>
-        public static float Scale
+        public static Vector2Int ReferenceResolution
         {
-            get => scale;
+            get => referenceResolution;
             set
             {
-                scale = float.IsNaN(value) ? DefaultScale : Mathf.Clamp(value, MinScale, MaxScale);
-                var host = DebugUIHost.Instance;
-                if (host != null)
-                    host.SetScale(scale);
+                referenceResolution = new Vector2Int(Mathf.Max(1, value.x), Mathf.Max(1, value.y));
+                ApplyScaling();
             }
+        }
+
+        /// <summary>
+        /// Which side of <see cref="ReferenceResolution"/> the UI fits: 0 = width, 1 = height, values
+        /// between blend the two (default 0.5, which keeps the same size when the device rotates).
+        /// Clamped to [0, 1].
+        /// </summary>
+        public static float MatchWidthOrHeight
+        {
+            get => matchWidthOrHeight;
+            set
+            {
+                matchWidthOrHeight = float.IsNaN(value) ? DefaultMatch : Mathf.Clamp01(value);
+                ApplyScaling();
+            }
+        }
+
+        internal const float DefaultMatch = 0.5f;
+        internal static readonly Vector2Int DefaultReferenceResolution = new Vector2Int(540, 960);
+        static Vector2Int referenceResolution = DefaultReferenceResolution;
+        static float matchWidthOrHeight = DefaultMatch;
+
+        static void ApplyScaling()
+        {
+            var host = DebugUIHost.Instance;
+            if (host != null)
+                host.ApplyScaling();
         }
 
 #if NG_DEBUGUI_INPUT_SYSTEM
@@ -253,8 +282,8 @@ namespace Ng.DebugTools
         static DebugButtonPosition buttonPosition = DebugButtonPosition.BottomRight;
 
         /// <summary>
-        /// Diameter of the round DBG button in panel px (default 48, clamped to 24 – 200; also scaled by
-        /// <see cref="Scale"/>). Tabs and content keep clear of it at any size.
+        /// Diameter of the round DBG button in panel px (default 48, clamped to 24 – 200; scales with
+        /// the rest of the UI). Tabs and content keep clear of it at any size.
         /// </summary>
         public static float ButtonSize
         {
@@ -270,9 +299,6 @@ namespace Ng.DebugTools
 
         internal const float DefaultButtonSize = 48f, MinButtonSize = 24f, MaxButtonSize = 200f;
         static float buttonSize = DefaultButtonSize;
-
-        internal const float DefaultScale = 2f, MinScale = 0.5f, MaxScale = 3f;
-        static float scale = DefaultScale;
 
         /// <summary>
         /// Adds a USS stylesheet on top of the built-in theme, e.g. to change fonts or colors.
@@ -302,7 +328,7 @@ namespace Ng.DebugTools
         internal static IReadOnlyList<StyleSheet> StyleSheets => styleSheets;
 
         /// <summary>
-        /// Back to defaults: full size, scale 2, default sorting order, button bottom-right and 48px, no extra stylesheets, backquote shortcut. Also runs on entering play
+        /// Back to defaults: full size, 540×960 reference resolution, match 0.5, default sorting order, button bottom-right and 48px, no extra stylesheets, backquote shortcut. Also runs on entering play
         /// mode so Enter Play Mode Options with domain reload disabled starts clean.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -315,7 +341,9 @@ namespace Ng.DebugTools
             styleSheets.Clear();
             width = height = 1f;
             ApplySize();
-            Scale = DefaultScale;
+            referenceResolution = DefaultReferenceResolution;
+            matchWidthOrHeight = DefaultMatch;
+            ApplyScaling();
             SortingOrder = DefaultSortingOrder;
             ButtonPosition = DebugButtonPosition.BottomRight;
             ButtonSize = DefaultButtonSize;

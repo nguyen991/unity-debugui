@@ -1,5 +1,5 @@
-/* Ng Debug UI — fixed theme. Sizes are in panel px; the panel uses ConstantPhysicalSize at
-   96 reference DPI, so 32px ≈ 8.5mm: comfortable for fingers, compact for a mouse. */
+/* Ng Debug UI — fixed theme. Sizes are in panel px; the panel scales with the screen size from
+   DebugUI.ReferenceResolution (default 540×960), so 32px ≈ 1/17 of a phone's width. */
 
 .ngdbg-root {
     position: absolute;

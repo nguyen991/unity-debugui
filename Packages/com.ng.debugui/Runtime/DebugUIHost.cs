@@ -56,11 +56,10 @@ namespace Ng.DebugTools
             settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>(ThemeResourcePath);
             if (settings.themeStyleSheet == null)
                 Debug.LogError($"[DebugUI] Theme not found at Resources/{ThemeResourcePath}");
-            settings.scaleMode = PanelScaleMode.ConstantPhysicalSize;
-            settings.referenceDpi = 96;
-            settings.fallbackDpi = 96;
+            settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
+            settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
             settings.sortingOrder = DebugUI.SortingOrder;
-            settings.scale = DebugUI.Scale;
+            ApplyScaling();
 
             Document = gameObject.AddComponent<UIDocument>();
             Document.panelSettings = settings;
@@ -80,9 +79,10 @@ namespace Ng.DebugTools
             };
         }
 
-        internal void SetScale(float scale)
+        internal void ApplyScaling()
         {
-            settings.scale = scale;
+            settings.referenceResolution = DebugUI.ReferenceResolution;
+            settings.match = DebugUI.MatchWidthOrHeight;
             lastScreenSize = default; // panel units per pixel changed: recompute safe-area insets
         }
 

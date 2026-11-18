@@ -17,7 +17,9 @@ public static class DemoTimePanel
             .Label("FPS", () => Mathf.RoundToInt(1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f)))
             .Slider("Window width", () => DebugUI.Width, v => DebugUI.Width = v, 0.5f, 1f)
             .Slider("Window height", () => DebugUI.Height, v => DebugUI.Height = v, 0.5f, 1f)
-            .Slider("UI scale", () => DebugUI.Scale, v => DebugUI.Scale = v, 0.5f, 3f)
+            .Slider("UI reference width", () => DebugUI.ReferenceResolution.x,
+                v => DebugUI.ReferenceResolution = new Vector2Int(v, v * 16 / 9), 360, 1440)
+            .Slider("Match width/height", () => DebugUI.MatchWidthOrHeight, v => DebugUI.MatchWidthOrHeight = v, 0f, 1f)
             .Horizontal(h => h
                 .Button("Log", () => Debug.Log("Hello from the demo\nwith a second line"))
                 .Button("Warning", () => Debug.LogWarning("Something looks off"), new Color(0.8f, 0.65f, 0.2f))
